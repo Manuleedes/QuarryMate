@@ -7,7 +7,7 @@
    - Emailid
    - Phone Number
    - Address
-   - Role (Customer or Restaurant Owner)
+   - Role (Customer or Quarry Owner)
    - Registration Date
    - Last Login Date
 2. **Quarry:**
