@@ -1,4 +1,4 @@
-# Zosh Food
+# QuarryMate
 
 1. **User:**
    - ID (Auto-generated)
@@ -10,11 +10,10 @@
    - Role (Customer or Restaurant Owner)
    - Registration Date
    - Last Login Date
-2. **Restaurant:**
+2. **Quarry:**
    - ID (Auto-generated)
    - Name
    - Description
-   - Cuisine Type
    - Address
    - Contact Information
    - Opening Hours
@@ -29,12 +28,12 @@
    - Category
    - Image URL
    - Availability Status
-   - Restaurant (reference to Restaurant entity)
+   - Quarry (reference to Quarry entity)
    - Creation Date
 4. **Order:**
    - ID (Auto-generated)
    - Customer (reference to User entity)
-   - Restaurant (reference to Restaurant entity)
+   - Quarry (reference to Quarry entity)
    - Total Amount
    - Order Status
    - Timestamp
