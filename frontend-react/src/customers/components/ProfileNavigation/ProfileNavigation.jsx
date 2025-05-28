@@ -17,7 +17,7 @@ const menu = [
   { title: "Address", icon: <HomeIcon /> },
   { title: "Payments", icon: <AccountBalanceWalletIcon /> },
   { title: "Notification", icon: <NotificationsIcon /> },
-  { title: "Events", icon: <EventIcon /> },
+  // { title: "Events", icon: <EventIcon /> },
   { title: "Logout", icon: <LogoutIcon /> },
 ];
 

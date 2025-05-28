@@ -58,9 +58,10 @@ const handleUpdateQuarryStatus=()=>{
       <img className="h-[17rem] w-full object-cover" src={item.imageUrl} alt="" />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
+        A quarry is a type of open-pit mine from which rocks, minerals, 
+        or aggregates such as stone, gravel, sand, or slate are extracted. 
+        Quarries are typically used for the extraction of materials used in construction, 
+        road building, cement production, landscaping, and other industrial processes.
         </Typography>
       </CardContent>
       <CardActions disableSpacing>

@@ -19,8 +19,8 @@ public class CreateMaterialRequest {
     private String name;
     private String description;
     private Long price;
-    
-  
+
+    private Double weightInTonnes;
     private Category category;
     private List<String> images;
 

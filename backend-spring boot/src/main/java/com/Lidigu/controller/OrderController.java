@@ -34,11 +34,8 @@ public class OrderController {
 	
     @PostMapping("/order")
 	public ResponseEntity<PaymentResponse>  createOrder(@RequestBody CreateOrderRequest order,
-			@RequestHeader("Authorization") String jwt) 
-					throws UserException, QuarryException,
-					CartException, 
-					StripeException,
-					OrderException{
+			@RequestHeader("Authorization") String jwt)
+            throws Exception {
 		User user=userService.findUserProfileByJwt(jwt);
 		System.out.println("req user "+user.getEmail());
     	if(order!=null) {

@@ -10,9 +10,13 @@ const PaymentSuccess = () => {
   const navigate = useNavigate();
   const navigateToHome = () => navigate("/");
   const dispatch = useDispatch();
+const queryParams = new URLSearchParams(window.location.search);
+// const sessionId = queryParams.get('session_id');
+// Session session = Session.retrieve(sessionId);
 
   useEffect(() => {
     dispatch(clearCartAction());
+    
   }, []);
 
   return (

@@ -14,15 +14,19 @@ import com.Lidigu.request.CreateOrderRequest;
 
 public interface OrderService {
 	
-	 public PaymentResponse createOrder(CreateOrderRequest order, User user) throws UserException, QuarryException, CartException, StripeException;
+	 PaymentResponse createOrder(CreateOrderRequest order, User user) throws Exception;
 	 
-	 public Order updateOrder(Long orderId, String orderStatus) throws OrderException;
+	 Order updateOrder(Long orderId, String orderStatus) throws OrderException;
 	 
-	 public void cancelOrder(Long orderId) throws OrderException;
+	 void cancelOrder(Long orderId) throws OrderException;
 	 
-	 public List<Order> getUserOrders(Long userId) throws OrderException;
+	 List<Order> getUserOrders(Long userId) throws OrderException;
 	 
-	 public List<Order> getOrdersOfQuarry(Long quarryId, String orderStatus) throws OrderException, QuarryException;
-	 
+	 List<Order> getOrdersOfQuarry(Long quarryId, String orderStatus) throws OrderException, QuarryException;
+
+	 void allocateLorriesToOrder(Order order, double totalWeight) throws Exception;
+
+
+
 
 }

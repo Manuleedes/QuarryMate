@@ -39,7 +39,8 @@ public class MaterialServiceImplementation implements MaterialService {
 			material.setDescription(req.getDescription());
 			material.setImages(req.getImages());
 			material.setName(req.getName());
-			material.setPrice((long) req.getPrice());
+		material.setWeightInTonnes(req.getWeightInTonnes());
+			material.setPricePerTonne((long) req.getPrice());
 		material.setQuarry(quarry);
 			material = materialRepository.save(material);
 
