@@ -18,7 +18,7 @@ export const topMaterials = [
     }
     ,
     {
-        image: "/home/lidigu/Downloads/cabro3.jpg",
+        image: "public/cabro3.jpg",
         title: "Cubrols"
     }
     ,

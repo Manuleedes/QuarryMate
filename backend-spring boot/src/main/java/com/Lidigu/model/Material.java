@@ -20,7 +20,7 @@ public class Material {
     
     private String name;
     private String description;
-    private Long price;
+    private Long pricePerTonne;
     
     @ManyToOne
     private Category materialCategory;
@@ -31,6 +31,7 @@ public class Material {
     private List<String> images;
 
     private boolean available;
+    private Double weightInTonnes;
 
 //    @JsonIgnore
     @ManyToOne

@@ -6,6 +6,6 @@ import com.Lidigu.model.PaymentResponse;
 
 public interface PaymentService {
 	
-	public PaymentResponse generatePaymentLink(Order order) throws StripeException;
+	 PaymentResponse generatePaymentLink(Order order) throws StripeException;
 
 }

@@ -50,13 +50,6 @@ const MenuItemTable = ({ isDashboard, name }) => {
     
   }, [quarry.usersQuarry]);
 
-  // console.log(
-  //   "-------- ",
-  //   menu.menuItems[1].ingredients,
-  //   categorizedIngredients(menu.menuItems[1].ingredients)
-  // );
-
-  
 
   const handleMaterialAvialability = (materialId) => {
     dispatch(updateMenuItemsAvailability({materialId,jwt:auth.jwt || jwt}));
@@ -84,112 +77,67 @@ const MenuItemTable = ({ isDashboard, name }) => {
         />
         <TableContainer>
           <Table aria-label="table in dashboard">
-            <TableHead>
-              <TableRow>
-                <TableCell>Image</TableCell>
-                <TableCell>Title</TableCell>
-                {/* <TableCell sx={{ textAlign: "center" }}>Category</TableCell> */}
-                {!isDashboard && (
-                  <TableCell sx={{ textAlign: "" }}>
-                    Ingredients
-                  </TableCell>
-                )}
-                <TableCell sx={{ textAlign: "center" }}>Price</TableCell>
-                {/* <TableCell sx={{ textAlign: "center" }}>Quantity</TableCell> */}
+                    <TableHead>
+            <TableRow>
+              <TableCell>Image</TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Weight (T)</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Price (Ksh)</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Lorries Required</TableCell>
+              <TableCell sx={{ textAlign: "center" }}>Availability</TableCell>
+              {!isDashboard && (
+                <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+  {menu.menuItems?.map((item) => (
+    <TableRow hover key={item.id}>
+      <TableCell>
+        <Avatar alt={item.name} src={item.images?.[0]} />
+      </TableCell>
 
-                <TableCell sx={{ textAlign: "center" }}>Availabilty</TableCell>
-                {!isDashboard && (
-                  <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {menu.menuItems?.map((item) => (
-                <TableRow
-                  hover
-                  key={item.id}
-                  sx={{
-                    "&:last-of-type td, &:last-of-type th": { border: 0 },
-                  }}
-                >
-                   <TableCell>
-                    {" "}
-                    <Avatar alt={item.name} src={item.images[0]} />{" "}
-                  </TableCell>
+      <TableCell>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Typography sx={{ fontWeight: 500, fontSize: "0.875rem" }}>
+            {item.name}
+          </Typography>
+          <Typography variant="caption">{item.category}</Typography>
+        </Box>
+      </TableCell>
 
-                  <TableCell
-                    sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
-                  >
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                      <Typography
-                        sx={{
-                          fontWeight: 500,
-                          fontSize: "0.875rem !important",
-                        }}
-                      >
-                        {item.name}
-                      </Typography>
-                      <Typography variant="caption">{item.brand}</Typography>
-                    </Box>
-                  </TableCell>
+      <TableCell sx={{ textAlign: "center" }}>
+        {item.weightInTonnes ?? "-"}
+      </TableCell>
 
-                   {/* {!isDashboard && (
-                    <TableCell>
-                      {Object.keys(
-                        categorizedIngredients(item?.ingredients)
-                      )?.map((category) => (
-                        <div key={category}>
-                          <p className="font-semibold">{category}</p>
-                          <div className="pl-5">
-                            {categorizedIngredients(item?.ingredients)[
-                              category
-                            ].map((ingredient, index) => (
-                              <div
-                                key={ingredient.id}
-                                className="flex gap-1 items-center"
-                              >
-                                <div>
-                                  <HorizontalRuleIcon
-                                    sx={{ fontSize: "1rem" }}
-                                  />
-                                </div>
-                                <div
-                                  key={ingredient.id}
-                                  className="flex gap-4 items-center"
-                                >
-                                  <p>{ingredient.name}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </TableCell>  
-                  )}  */}
-                  <TableCell sx={{ textAlign: "center" }}>
-                    ₹{item.price}
-                  </TableCell>
+      <TableCell sx={{ textAlign: "center" }}>
+        Ksh.{(item.weightInTonnes * 10000).toLocaleString()}
+      </TableCell>
 
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <Button
-                      color={item.available ? "success" : "error"}
-                      variant="text"
-                      onClick={() => handleMaterialAvialability(item.id)}
-                    >
-                      {item.available ? "in stock" : "out of stock"}
-                    </Button>
-                  </TableCell>
+      <TableCell sx={{ textAlign: "center" }}>
+        {item.weightInTonnes ? Math.ceil(item.weightInTonnes / 18) : "-"}
+      </TableCell>
 
-                  {!isDashboard && (
-                    <TableCell sx={{ textAlign: "center" }}>
-                      <IconButton onClick={() => handleDeleteMaterial(item.id)}>
-                        <DeleteIcon color="error" />
-                      </IconButton>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))}
-            </TableBody>
+      <TableCell sx={{ textAlign: "center" }}>
+        <Button
+          color={item.available ? "success" : "error"}
+          variant="text"
+          onClick={() => handleMaterialAvialability(item.id)}
+        >
+          {item.available ? "in stock" : "out of stock"}
+        </Button>
+      </TableCell>
+
+      {!isDashboard && (
+        <TableCell sx={{ textAlign: "center" }}>
+          <IconButton onClick={() => handleDeleteMaterial(item.id)}>
+            <DeleteIcon color="error" />
+          </IconButton>
+        </TableCell>
+      )}
+    </TableRow>
+  ))}
+</TableBody>
           </Table>
         </TableContainer>
       </Card>

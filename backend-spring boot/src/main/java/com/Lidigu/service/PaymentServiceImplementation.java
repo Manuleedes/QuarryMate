@@ -11,21 +11,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentServiceImplementation implements PaymentService{
-	
-	
+
 	@Value("${stripe.api.key}")
 	 private String stripeSecretKey;
-
 	@Override
 	public PaymentResponse generatePaymentLink(Order order) throws StripeException {
+
 
 	  Stripe.apiKey = stripeSecretKey;
 
 	        SessionCreateParams params = SessionCreateParams.builder()
 	                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-	                .setMode(SessionCreateParams.Mode.PAYMENT)
-	                .setSuccessUrl("https://zosh-food.vercel.app/payment/success/"+order.getId())
-	                .setCancelUrl("https://zosh-food.vercel.app/cancel")
+					.setMode(SessionCreateParams.Mode.PAYMENT)
+					.setSuccessUrl("http://localhost:3000/payment/success/"+order.getId())
+					//.setSuccessUrl("http://localhost:3000/PaymentSuccess?session_id={CHECKOUT_SESSION_ID}")
+					.setCancelUrl("http://localhost:3000/payment/fail")
 	                .addLineItem(SessionCreateParams.LineItem.builder()
 	                        .setQuantity(1L)
 	                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
@@ -39,8 +39,8 @@ public class PaymentServiceImplementation implements PaymentService{
 	                .build();
 	        
 	        Session session = Session.create(params);
-	        
-	        System.out.println("session _____ " + session);
+			//Session session = Session.retrieve(sessionId);
+		System.out.println("session _____ " + session);
 	        
 	        PaymentResponse res = new PaymentResponse();
 	        res.setPayment_url(session.getUrl());
@@ -48,5 +48,19 @@ public class PaymentServiceImplementation implements PaymentService{
 	        return res;
 	    
 	}
+//	Session session = null;
+//        try {
+//		session = Session.create(params);
+//	}catch (StripeException e){
+//		System.out.println(e.getMessage());
+//	}
+//        assert session != null;
+//        return StripeResponse.builder()
+//				.status("SUCCESS")
+//                .message("Payment Session created")
+//                .sessionId(session.getId())
+//			.sessionUrl(session.getUrl())
+//			.build();
+//}
 
 }

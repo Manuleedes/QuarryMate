@@ -20,7 +20,7 @@ import FastfoodIcon from '@mui/icons-material/Fastfood';
 const menu = [
   { title: "Dashboard", icon: <Dashboard />, path: "/" },
   { title: "Orders", icon: <ShoppingBagIcon />, path: "/orders" },
-  { title: "Menu", icon: <ShopTwoIcon />, path: "/menu" },
+  { title: "Materials", icon: <ShopTwoIcon />, path: "/menu" },
   { title: "Material Category", icon: <CategoryIcon />, path: "/category" },
   // { title: "Ingredients", icon: <FastfoodIcon />, path: "/ingredients" },
   // { title: "Events", icon: <EventIcon />, path: "/event" },

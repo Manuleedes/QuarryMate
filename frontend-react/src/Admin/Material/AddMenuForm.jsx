@@ -38,33 +38,25 @@ const MenuProps = {
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
-  price: Yup.number()
-    .typeError("Price must be a number")
-    .required("Price is required")
-    .min(0, "Price must be greater than or equal to 0"),
-
+  weightInTonnes: Yup.number()
+    .typeError("Weight must be a number")
+    .required("Weight is required")
+    .min(0.1, "Weight must be greater than 0"),
   imageUrl: Yup.string()
     .url("Invalid URL format")
     .required("Image URL is required"),
-  // vegetarian: Yup.boolean().required("Is Vegetarian is required"),
-  // seasonal: Yup.boolean().required("Is Gluten Free is required"),
   quantity: Yup.number()
-    .typeError("Quantity must be a number")
     .required("Quantity is required")
-    .min(0, "Quantity must be greater than or equal to 0"),
+    .min(1, "Minimum quantity is 1"),
 });
 const initialValues = {
   name: "",
   description: "",
-  price: "",
-  category: "",
+  weightInTonnes: 0,
   images: [],
   quarryId: "",
-
-  // vegetarian: true,
-  // seasonal: false,
-  quantity: 0,
-  // ingredients: [],
+  category: "",
+  quantity: 1,
 };
 
 const AddMenuForm = () => {
@@ -78,10 +70,13 @@ const AddMenuForm = () => {
     initialValues,
     onSubmit: (values) => {
       values.quarryId = quarry.usersQuarry.id;
-
+      
+      const pricePerTonne = 10000; // Or fetch this from backend
+      values.price = values.weightInTonnes * pricePerTonne;
+      values.lorriesRequired = Math.ceil(values.weightInTonnes / 18);
+    
       dispatch(createMenuItem({ menu: values, jwt: auth.jwt || jwt }));
-      console.log("values ----- ", values);
-    },
+    }
   });
 
   const handleImageChange = async (event) => {
@@ -113,7 +108,7 @@ const AddMenuForm = () => {
       <div className="lg:px-32 px-5 lg:flex  justify-center min-h-screen items-center pb-5">
         <div>
           <h1 className="font-bold text-2xl text-center py-2">
-            Add New Menu Item
+            Add New Material Item
           </h1>
           <form onSubmit={formik.handleSubmit} className="space-y-4 ">
             <Grid container spacing={2}>
@@ -196,15 +191,15 @@ const AddMenuForm = () => {
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  id="price"
-                  name="price"
-                  label="Price"
-                  variant="outlined"
+                  id="weightInTonnes"
+                  name="weightInTonnes"
+                  label="Weight (in tonnes)"
                   type="number"
+                  variant="outlined"
                   onChange={formik.handleChange}
-                  value={formik.values.price}
-                  error={formik.touched.price && Boolean(formik.errors.price)}
-                  helperText={formik.touched.price && formik.errors.price}
+                  value={formik.values.weightInTonnes}
+                  error={formik.touched.weightInTonnes && Boolean(formik.errors.weightInTonnes)}
+                  helperText={formik.touched.weightInTonnes && formik.errors.weightInTonnes}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -310,8 +305,14 @@ const AddMenuForm = () => {
               </FormControl>
             </Grid> */}
             </Grid>
+                      {formik.values.weightInTonnes > 0 && (
+            <div className="space-y-1 p-2 bg-gray-100 rounded-md">
+              <p>Total Price: <strong>₦{formik.values.weightInTonnes * 10000}</strong></p>
+              <p>Lorries Required: <strong>{Math.ceil(formik.values.weightInTonnes / 18)}</strong></p>
+            </div>
+          )}
             <Button variant="contained" color="primary" type="submit">
-              Create Menu Item
+              Create Material Item
             </Button>
           </form>
         </div>

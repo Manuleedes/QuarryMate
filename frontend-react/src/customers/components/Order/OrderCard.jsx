@@ -12,7 +12,7 @@ const OrderCard = ({order,status}) => {
         />
         <div>
           <p>{order.material.name}</p>
-          <p className="text-gray-400">₹{order.material.price}</p>
+          <p className="text-gray-400">Ksh.{order.material.price}</p>
         </div>
       </div>
       <div>

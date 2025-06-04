@@ -4,7 +4,7 @@ import MenuItemTable from './MenuItemTable'
 const QuarriesMenu = () => {
   return (
     <div className='px-2'>
-      <MenuItemTable name={"All Menu Items"}/>
+      <MenuItemTable name={"All Material Items"}/>
     </div>
   )
 }
