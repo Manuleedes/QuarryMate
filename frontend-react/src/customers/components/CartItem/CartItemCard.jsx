@@ -1,77 +1,58 @@
-import { Button, Chip, Divider, IconButton } from "@mui/material";
 import React from "react";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addItemToCart,
-  removeCartItem,
-  updateCartItem,
-} from "../../../State/Customers/Cart/cart.action";
+import { removeCartItem } from "../../../State/Customers/Cart/cart.action";
 
 const CartItemCard = ({ item }) => {
   const dispatch = useDispatch();
-  const jwt=localStorage.getItem("jwt");
-  const {auth}=useSelector(store=>store)
-  const handleUpdateCartItem = (value) => {
-    if(value===-1 && item.quantity==1){
-      handleRemoveCartItem()
-    }
-    const data={ cartItemId: item.id, quantity: item.quantity + value }
-    dispatch(
-      updateCartItem({data,jwt:auth.jwt || jwt})
-    );
+  const jwt = localStorage.getItem("jwt");
+  const { auth } = useSelector((store) => store);
+
+  const handleRemoveCartItem = () => {
+    dispatch(removeCartItem({ cartItemId: item.id, jwt: auth.jwt || jwt }));
   };
-  const handleRemoveCartItem=()=>{
-    dispatch(removeCartItem({cartItemId:item.id,jwt:auth.jwt || jwt}))
-    
-  }
+
   return (
-    <div className="px-5">
+    <div className="px-5 py-3 border-b">
       <div className="lg:flex items-center lg:space-x-5">
         <div>
           <img
-            className="w-[5rem] h-[5rem] object-cover"
+            className="w-[5rem] h-[5rem] object-cover rounded"
             src={item.material.images[0]}
-            alt=""
+            alt={item.material.name}
           />
         </div>
 
-        <div className="flex items-center justify-between lg:w-[70%]">
-          <div className="space-y-1 lg:space-y-3 w-full ">
-            <p className="">{item.material.name}</p>
-            {
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-1">
-                  <IconButton
-                    onClick={() => handleUpdateCartItem(-1)}
-                    color="primary"
-                  >
-                    <RemoveCircleOutlineIcon />
-                  </IconButton>
-                  <div className="w-5 h-5 text-xs flex items-center justify-center ">
-                    {item.quantity}
-                  </div>
+        <div className="flex items-center justify-between lg:w-full mt-2 lg:mt-0">
+        <div className="space-y-1 lg:space-y-2 w-full">
+  <p className="font-medium">{item.material.name}</p>
 
-                  <IconButton
-                    onClick={() => handleUpdateCartItem(1)}
-                    color="primary"
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton>
-                </div>
-              </div>
-            }
-          </div>
+  <p className="text-sm text-gray-500">
+  Tonnes Ordered: <span className="font-semibold">{item.quantity}</span>
+</p>
 
-          <p>Ksh.{item.totalPrice}</p>
+<p className="text-sm text-gray-500">
+  Total Price:{" "}
+  <span className="font-semibold">
+    Ksh.{" "}
+    {item.totalPrice !== undefined && item.totalPrice !== null
+      ? item.totalPrice
+      : item.quantity * 2000}
+  </span>
+</p>
+</div>
+
+          <IconButton
+            onClick={handleRemoveCartItem}
+            color="error"
+            className="ml-4"
+          >
+            <DeleteIcon />
+          </IconButton>
         </div>
       </div>
-      {/* <div className="pt-3 space-x-2">
-        {item.ingredients.map((item)=><Chip label={item}/> )}
-      </div> */}
-      
-  </div>
+    </div>
   );
 };
 

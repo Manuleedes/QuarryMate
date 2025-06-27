@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.Lidigu.Exception.QuarryException;
+import com.Lidigu.domain.PricingUnit;
 import com.Lidigu.repository.QuarryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,21 +34,33 @@ public class MaterialServiceImplementation implements MaterialService {
 			throws MaterialException,
 			QuarryException {
 
-			Material material=new Material();
+		try {
+			Material material = new Material();
 			material.setMaterialCategory(category);
 			material.setCreationDate(new Date());
 			material.setDescription(req.getDescription());
 			material.setImages(req.getImages());
 			material.setName(req.getName());
-		material.setWeightInTonnes(req.getWeightInTonnes());
-			material.setPricePerTonne((long) req.getPrice());
-		material.setQuarry(quarry);
+			material.setQuantity(req.getQuantity() != null ? req.getQuantity() : 0.0);
+			material.setPricePerUnit(req.getPrice());
+			material.setQuarry(quarry);
+			material.setPricingUnit(req.getPricingUnit() != null ? req.getPricingUnit() : PricingUnit.TONNE);
+			material.setAvailable(true); // Set default availability
+
 			material = materialRepository.save(material);
 
+			if (quarry.getMaterials() == null) {
+				quarry.setMaterials(new ArrayList<>());
+			}
 			quarry.getMaterials().add(material);
+
 			return material;
-		
+		} catch (Exception e) {
+			throw new MaterialException("Failed to create material: " + e.getMessage());
+		}
 	}
+
+
 
 	@Override
 	public void deleteMaterial(Long materialId) throws MaterialException {

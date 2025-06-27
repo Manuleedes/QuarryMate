@@ -50,13 +50,6 @@ const Navbar = () => {
     navigate("/");
   };
 
-  // useEffect(()=>{
-  //   if(auth.user?.fullName){
-  //     // handleCloseAuthModel()
-  //   }
-
-  // },[auth.user])
-
   const handleLogout = () => {
     dispatch(logout());
     handleCloseMenu();

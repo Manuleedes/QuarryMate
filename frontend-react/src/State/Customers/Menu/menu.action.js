@@ -10,6 +10,7 @@ import {
   getMenuItemsByQuarryIdRequest,
   getMenuItemsByQuarryIdSuccess,
 } from "./ActionCreators";
+
 import {
   DELETE_MENU_ITEM_FAILURE,
   DELETE_MENU_ITEM_REQUEST,
@@ -22,107 +23,140 @@ import {
   UPDATE_MENU_ITEMS_AVAILABILITY_SUCCESS,
 } from "./ActionType";
 
-// localhost:5454/api/admin/ingredients/food/16
-
-export const createMenuItem = ({menu,jwt}) => {
+/**
+ * Create a new material item
+ */
+export const createMenuItem = ({ menu, jwt }) => {
   return async (dispatch) => {
     dispatch(createMenuItemRequest());
     try {
-      const { data } = await api.post("api/admin/material", menu,
-      {
+      // Build payload exactly matching backend CreateMaterialRequest
+      const payload = {
+        name: menu.name,
+        description: menu.description,
+        price: Number(menu.pricePerUnit), // backend expects `price`
+        quantity: Number(menu.quantity),
+        images: menu.images || [],
+        quarryId: menu.quarryId,
+        pricingUnit: menu.pricingUnit?.toUpperCase(), // "TONNE" or "PIECE"
+        category: menu.category || null, // Send as object or null
+      };
+
+      console.log("Sending payload to backend:", payload);
+
+      const { data } = await api.post("api/admin/material", payload, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       });
-      console.log("created menu ", data);
+
+      console.log("Created menu item:", data);
       dispatch(createMenuItemSuccess(data));
     } catch (error) {
-      console.log("catch error ", error);
+      console.error("createMenuItem error:", error);
+      if (error.response) {
+        console.error("Backend response data:", error.response.data);
+        console.error("Status:", error.response.status);
+      }
       dispatch(createMenuItemFailure(error));
     }
   };
 };
 
+/**
+ * Get all menu items by quarry ID
+ */
 export const getMenuItemsByQuarryId = (reqData) => {
   return async (dispatch) => {
     dispatch(getMenuItemsByQuarryIdRequest());
     try {
       const { data } = await api.get(
-        `/api/material/quarry/${reqData.quarryId}?vegetarian=${reqData.vegetarian}&nonveg=${reqData.nonveg}
-        &seasonal=${reqData.seasonal}&material_category=${reqData.materialCategory}`,
+        `/api/material/quarry/${reqData.quarryId}?vegetarian=${reqData.vegetarian}&nonveg=${reqData.nonveg}&seasonal=${reqData.seasonal}&material_category=${reqData.materialCategory}`,
         {
           headers: {
             Authorization: `Bearer ${reqData.jwt}`,
           },
         }
       );
-      console.log("menu item by quarries ", data);
+      console.log("Menu items by quarry:", data);
       dispatch(getMenuItemsByQuarryIdSuccess(data));
     } catch (error) {
+      console.error("getMenuItemsByQuarryId error:", error);
       dispatch(getMenuItemsByQuarryIdFailure(error));
     }
   };
 };
 
-export const searchMenuItem = ({keyword,jwt}) => {
+/**
+ * Search menu item by keyword
+ */
+export const searchMenuItem = ({ keyword, jwt }) => {
   return async (dispatch) => {
     dispatch({ type: SEARCH_MENU_ITEM_REQUEST });
     try {
-      const { data } = await api.get(`api/material/search?name=${keyword}`,{
+      const { data } = await api.get(`api/material/search?name=${keyword}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       });
-      console.log("data ----------- ", data);
+      console.log("Search result:", data);
       dispatch({ type: SEARCH_MENU_ITEM_SUCCESS, payload: data });
     } catch (error) {
+      console.error("searchMenuItem error:", error);
       dispatch({ type: SEARCH_MENU_ITEM_FAILURE });
     }
   };
 };
 
+/**
+ * Get all ingredients of menu item by quarry ID
+ */
 export const getAllIngredientsOfMenuItem = (reqData) => {
   return async (dispatch) => {
     dispatch(getMenuItemsByQuarryIdRequest());
     try {
-      const { data } = await api.get(
-        `api/material/quarry/${reqData.quarryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${reqData.jwt}`,
-          },
-        }
-      );
-      console.log("menu item by quarries ", data);
+      const { data } = await api.get(`api/material/quarry/${reqData.quarryId}`, {
+        headers: {
+          Authorization: `Bearer ${reqData.jwt}`,
+        },
+      });
+      console.log("Ingredients by quarry:", data);
       dispatch(getMenuItemsByQuarryIdSuccess(data));
     } catch (error) {
+      console.error("getAllIngredientsOfMenuItem error:", error);
       dispatch(getMenuItemsByQuarryIdFailure(error));
     }
   };
 };
 
-export const updateMenuItemsAvailability = ({materialId,jwt}) => {
+/**
+ * Update menu item availability (toggle)
+ */
+export const updateMenuItemsAvailability = ({ materialId, jwt }) => {
   return async (dispatch) => {
     dispatch({ type: UPDATE_MENU_ITEMS_AVAILABILITY_REQUEST });
     try {
-      const { data } = await api.put(`/api/admin/material/${materialId}`, {},{
+      const { data } = await api.put(`/api/admin/material/${materialId}`, {}, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       });
-      console.log("update menuItems Availability ", data);
+      console.log("Updated material availability:", data);
       dispatch({ type: UPDATE_MENU_ITEMS_AVAILABILITY_SUCCESS, payload: data });
     } catch (error) {
-      console.log("error ",error)
+      console.error("updateMenuItemsAvailability error:", error);
       dispatch({
         type: UPDATE_MENU_ITEMS_AVAILABILITY_FAILURE,
         payload: error,
       });
     }
-};
+  };
 };
 
-export const deleteMaterialAction = ({materialId,jwt}) => async (dispatch) => {
+/**
+ * Delete a material item
+ */
+export const deleteMaterialAction = ({ materialId, jwt }) => async (dispatch) => {
   dispatch({ type: DELETE_MENU_ITEM_REQUEST });
   try {
     const { data } = await api.delete(`/api/admin/material/${materialId}`, {
@@ -130,9 +164,11 @@ export const deleteMaterialAction = ({materialId,jwt}) => async (dispatch) => {
         Authorization: `Bearer ${jwt}`,
       },
     });
-    console.log("delete material ", data);
+    console.log("Deleted material:", data);
     dispatch({ type: DELETE_MENU_ITEM_SUCCESS, payload: materialId });
   } catch (error) {
+    console.error("deleteMaterialAction error:", error);
     dispatch({ type: DELETE_MENU_ITEM_FAILURE, payload: error });
   }
 };
+

@@ -10,19 +10,19 @@ import com.Lidigu.request.AddCartItemRequest;
 
 public interface CartSerive {
 
-	public CartItem addItemToCart(AddCartItemRequest req, String jwt) throws UserException, MaterialException, CartException, CartItemException;
+	 CartItem addItemToCart(AddCartItemRequest req, String jwt) throws UserException, MaterialException, CartException, CartItemException;
 
-	public CartItem updateCartItemQuantity(Long cartItemId,int quantity) throws CartItemException;
+	 CartItem updateCartItemQuantity(Long cartItemId,int quantity) throws CartItemException;
 
-	public Cart removeItemFromCart(Long cartItemId, String jwt) throws UserException, CartException, CartItemException;
+	 Cart removeItemFromCart(Long cartItemId, String jwt) throws UserException, CartException, CartItemException;
 
-	public Long calculateCartTotals(Cart cart) throws UserException;
+	 Long calculateCartTotals(Cart cart) throws UserException;
 	
-	public Cart findCartById(Long id) throws CartException;
+	 Cart findCartById(Long id) throws CartException;
 	
-	public Cart findCartByUserId(Long userId) throws CartException, UserException;
+	 Cart findCartByUserId(Long userId) throws CartException, UserException;
 	
-	public Cart clearCart(Long userId) throws CartException, UserException;
+	 Cart clearCart(Long userId) throws CartException, UserException;
 	
 
 	

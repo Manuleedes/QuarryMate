@@ -8,7 +8,7 @@ import lombok.Data;
 public class CreateOrderRequest {
  
 	private Long quarryId;
-	
+	private Long totalPrice;
 	private Address deliveryAddress;
 	
     

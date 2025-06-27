@@ -8,22 +8,20 @@ import { useDispatch, useSelector } from "react-redux";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { Dashboard } from "@mui/icons-material";
-import AddIcon from "@mui/icons-material/Add";
-import PersonIcon from "@mui/icons-material/Person";
-import ShopTwoIcon from "@mui/icons-material/ShopTwo";
 import { logout } from "../State/Authentication/Action";
-import EventIcon from "@mui/icons-material/Event";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import CategoryIcon from '@mui/icons-material/Category';
-import FastfoodIcon from '@mui/icons-material/Fastfood';
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import ConstructionIcon from "@mui/icons-material/Construction";
+
 
 const menu = [
   { title: "Dashboard", icon: <Dashboard />, path: "/" },
-  { title: "Orders", icon: <ShoppingBagIcon />, path: "/orders" },
-  { title: "Materials", icon: <ShopTwoIcon />, path: "/menu" },
+  { title: "Orders", icon: <LocalShippingIcon />, path: "/orders" },
+  { title: "Materials", icon: <ConstructionIcon />, path: "/menu" },
   { title: "Material Category", icon: <CategoryIcon />, path: "/category" },
-  // { title: "Ingredients", icon: <FastfoodIcon />, path: "/ingredients" },
   // { title: "Events", icon: <EventIcon />, path: "/event" },
+  { title: "Lorries", icon: <LocalShippingIcon />, path: "/lorries" },
   { title: "Details", icon: <AdminPanelSettingsIcon />, path: "/details" },
   { title: "Logout", icon: <LogoutIcon />, path: "/" },
   

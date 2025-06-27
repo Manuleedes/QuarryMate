@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +33,7 @@ public class Order {
 	private double totalWeight;
 
 	private Long totalAmount;
-	
+
 	private String orderStatus;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -41,21 +42,21 @@ public class Order {
 	@ManyToOne
 	private Address deliveryAddress;
 
-//	@JsonIgnore
+	//	@JsonIgnore
 	@OneToMany
 	private List<OrderItem> items;
 
 	@OneToOne
 	private Payment payment;
-	
+
 	private int totalItem;
-	
+
 	private int totalPrice;
 
+	@JsonManagedReference
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<Lorry> allocatedLorries = new ArrayList<>();
-
-
+	private Long lorryCost;
 	public void setLorryCost(long totalLorryCost) {
 	}
 }

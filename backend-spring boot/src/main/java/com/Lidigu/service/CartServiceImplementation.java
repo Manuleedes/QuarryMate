@@ -1,10 +1,13 @@
 package com.Lidigu.service;
 
+
+
 import java.util.Optional;
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.Lidigu.Exception.CartException;
 import com.Lidigu.Exception.CartItemException;
 import com.Lidigu.Exception.MaterialException;
@@ -33,12 +36,10 @@ public class CartServiceImplementation implements CartSerive {
 	public CartItem addItemToCart(AddCartItemRequest req, String jwt) throws UserException, MaterialException, CartException, CartItemException {
 
 		User user = userService.findUserProfileByJwt(jwt);
-		
 		Optional<Material> menuItem=menuItemRepository.findById(req.getMenuItemId());
 		if(menuItem.isEmpty()) {
 			throw new MaterialException("Menu Item not exist with id "+req.getMenuItemId());
 		}
-
 		Cart cart = findCartByUserId(user.getId());
 
 		for (CartItem cartItem : cart.getItems()) {
@@ -53,16 +54,20 @@ public class CartServiceImplementation implements CartSerive {
 		newCartItem.setMaterial(menuItem.get());
 		newCartItem.setQuantity(req.getQuantity());
 		newCartItem.setCart(cart);
-//		newCartItem.setIngredients(req.getIngredients());
-		newCartItem.setTotalPrice(req.getQuantity()*menuItem.get().getPricePerTonne());
-		
+		double pricePerTonne = 2000.0;
+		double quantity = req.getQuantity();
+		long materialCost = (long) (quantity * pricePerTonne);
+		int lorriesRequired = (int) Math.ceil(quantity / 18.0);
+		long lorryCost = lorriesRequired * 25000;
+		long totalPrice = materialCost + lorryCost;
+		newCartItem.setTotalPrice(totalPrice);
 		CartItem savedItem=cartItemRepository.save(newCartItem);
 		cart.getItems().add(savedItem);
 		cartRepository.save(cart);
-		
 		return savedItem;
 
 	}
+
 
 	@Override
 	public CartItem updateCartItemQuantity(Long cartItemId,int quantity) throws CartItemException {
@@ -71,7 +76,7 @@ public class CartServiceImplementation implements CartSerive {
 			throw new CartItemException("cart item not exist with id "+cartItemId);
 		}
 		cartItem.get().setQuantity(quantity);
-		cartItem.get().setTotalPrice((cartItem.get().getMaterial().getPricePerTonne()*quantity));
+		cartItem.get().setTotalPrice((cartItem.get().getMaterial().getPricePerUnit()*quantity));
 		return cartItemRepository.save(cartItem.get());
 	}
 
@@ -88,19 +93,28 @@ public class CartServiceImplementation implements CartSerive {
 		if(cartItem.isEmpty()) {
 			throw new CartItemException("cart item not exist with id "+cartItemId);
 		}
-
 		cart.getItems().remove(cartItem.get());
 		return cartRepository.save(cart);
 	}
 
 	@Override
 	public Long calculateCartTotals(Cart cart) throws UserException {
+		final double PRICE_PER_TONNE = 2000.0;
+		final long LORRY_COST = 25000;
 
-		Long total = 0L;
+		double totalTonnes = 0.0;
+		long totalMaterialCost = 0L;
 		for (CartItem cartItem : cart.getItems()) {
-			total += cartItem.getMaterial().getPricePerTonne() * cartItem.getQuantity();
+			double quantity = cartItem.getQuantity();
+			long materialCost = (long) (quantity * PRICE_PER_TONNE);
+			cartItem.setTotalCost(materialCost);
+			totalMaterialCost += materialCost;
+			totalTonnes += quantity;
 		}
-		return total;
+		int lorriesRequired = (int) Math.ceil(totalTonnes / 18.0);
+		long lorryCost = lorriesRequired * LORRY_COST;
+		var totalCost = totalMaterialCost + lorryCost;
+		return totalCost;
 	}
 
 	@Override
@@ -111,7 +125,6 @@ public class CartServiceImplementation implements CartSerive {
 		}
 		throw new CartException("Cart not found with the id "+id);
 	}
-
 	@Override
 	public Cart findCartByUserId(Long userId) throws CartException, UserException {
 	
@@ -121,13 +134,10 @@ public class CartServiceImplementation implements CartSerive {
 			return opt.get();
 		}
 		throw new CartException("cart not found");
-		
 	}
-
 	@Override
 	public Cart clearCart(Long userId) throws CartException, UserException {
 		Cart cart=findCartByUserId(userId);
-		
 		cart.getItems().clear();
 		return cartRepository.save(cart);
 	}

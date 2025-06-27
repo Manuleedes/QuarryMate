@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.Lidigu.domain.PricingUnit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,8 +21,12 @@ public class Material {
     
     private String name;
     private String description;
-    private Long pricePerTonne;
-    
+    private Long pricePerUnit;
+
+    @Enumerated(EnumType.STRING)
+    private PricingUnit pricingUnit;
+
+
     @ManyToOne
     private Category materialCategory;
 
@@ -31,7 +36,7 @@ public class Material {
     private List<String> images;
 
     private boolean available;
-    private Double weightInTonnes;
+    private Double quantity;
 
 //    @JsonIgnore
     @ManyToOne

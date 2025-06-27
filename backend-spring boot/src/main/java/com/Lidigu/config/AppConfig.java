@@ -27,8 +27,8 @@ public class AppConfig {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(Authorize -> Authorize
                 		.requestMatchers("/api/admin/**").hasAnyRole("QUARRY_OWNER","ADMIN")
+                       // .requestMatchers("/api/admin/lorries/**").permitAll()
                                 .requestMatchers("/api/**").authenticated()
-                                
                                 .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)

@@ -28,11 +28,10 @@ public class CartItem {
 
     @ManyToOne
     private Material material;
-    
-    private int quantity;
-    
-    private Long totalPrice;
-    
-   
-}
 
+    private int quantity;
+
+    private Long totalPrice;
+
+    private Long TotalCost;
+}

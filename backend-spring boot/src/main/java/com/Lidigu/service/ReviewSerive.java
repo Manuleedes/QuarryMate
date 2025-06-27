@@ -9,7 +9,7 @@ import com.Lidigu.request.ReviewRequest;
 
 public interface ReviewSerive {
 	
-    public Review submitReview(ReviewRequest review,User user);
-    public void deleteReview(Long reviewId) throws ReviewException;
-    public double calculateAverageRating(List<Review> reviews);
+     Review submitReview(ReviewRequest review,User user);
+     void deleteReview(Long reviewId) throws ReviewException;
+     double calculateAverageRating(List<Review> reviews);
 }

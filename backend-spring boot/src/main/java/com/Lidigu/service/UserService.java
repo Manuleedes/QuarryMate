@@ -7,13 +7,13 @@ import com.Lidigu.model.User;
 
 public interface UserService {
 
-	public User findUserProfileByJwt(String jwt) throws UserException;
+	 User findUserProfileByJwt(String jwt) throws UserException;
 	
-	public User findUserByEmail(String email) throws UserException;
+	 User findUserByEmail(String email) throws UserException;
 
-	public List<User> findAllUsers();
+	 List<User> findAllUsers();
 
-	public List<User> getPendingQuarryOwner();
+	 List<User> getPendingQuarryOwner();
 
 	void updatePassword(User user, String newPassword);
 

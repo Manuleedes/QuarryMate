@@ -7,6 +7,8 @@ import QuarriesOrder from "./Orders/QuarriesOrder";
 import QuarriesMenu from "./Material/QuarriesMenu";
 import AddMenuForm from "./Material/AddMenuForm";
 import CreateQuarryForm from "./AddQuarries/CreateQuarryForm";
+import QuarriesLorries from "./Lorries/QuarriesLorries";
+import AddLorryForm from "./Lorries/AddLorryForm";
 import Category from "./Category/Category";
 import { useDispatch, useSelector } from "react-redux";
 import { getQuarriesCategory } from "../State/Customers/Quarry/quarry.action";
@@ -24,12 +26,6 @@ const Admin = () => {
   const jwt = localStorage.getItem("jwt");
   useEffect(() => {
     if (quarry.usersQuarry) {
-      // dispatch(
-      //   getIngredientCategory({ jwt, id: quarry.usersQuarry?.id })
-      // );
-      // dispatch(
-      //   getIngredientsOfQuarry({ jwt, id: quarry.usersQuarry?.id })
-      // );
       dispatch(
         getQuarriesCategory({
           jwt: auth.jwt || jwt,
@@ -60,9 +56,9 @@ const Admin = () => {
             <Route path="/menu" element={<QuarriesMenu />} />
             <Route path="/add-menu" element={<AddMenuForm />} />
             <Route path="/add-quarry" element={<CreateQuarryForm />} />
-            {/* <Route path="/event" element={<IngredientTable />} />
-            <Route path="/ingredients" element={<Ingredients />} /> */}
             <Route path="/category" element={<Category />} />
+            <Route path="/lorries" element={<QuarriesLorries />} />
+            <Route path="/add-lorry" element={<AddLorryForm />} />
             <Route path="/details" element={<Details />} />
           </Routes>
         </div>

@@ -9,10 +9,10 @@ import com.Lidigu.model.User;
 
 public interface NotificationService {
 	
-	public Notification sendOrderStatusNotification(Order order);
-	public void sendQuarryNotification(Quarry quarry, String message);
-	public void sendPromotionalNotification(User user, String message);
+	 Notification sendOrderStatusNotification(Order order);
+	 void sendQuarryNotification(Quarry quarry, String message);
+	 void sendPromotionalNotification(User user, String message);
 	
-	public List<Notification> findUsersNotification(Long userId);
+	 List<Notification> findUsersNotification(Long userId);
 
 }

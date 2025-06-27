@@ -43,7 +43,6 @@ public class CategoryServiceImplementation implements CategoryService {
 		if(opt.isEmpty()) {
 			throw new QuarryException("category not exist with id "+id);
 		}
-		
 		return opt.get();
 	}
 

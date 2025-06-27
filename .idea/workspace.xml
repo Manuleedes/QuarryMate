@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0fc875b2-6322-40a3-9ba0-96758f6e11ea" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/config/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/config/JwtTokenValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/config/JwtTokenValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/controller/AdminLorryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/controller/AdminLorryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/controller/AdminMenuItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/controller/AdminMenuItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/controller/CustomerOrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/controller/CustomerOrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/domain/USER_ROLE.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/domain/USER_ROLE.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/model/CartItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/model/CartItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/model/Lorry.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/model/Lorry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/model/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/model/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/repository/LorryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/repository/LorryRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/request/CreateLorryRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/request/CreateMaterialRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/request/CreateMaterialRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/request/CreateOrderRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/request/CreateOrderRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/request/LorryRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/request/LorryRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/request/MaterialCalculationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/request/MaterialCalculationRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/response/CartItemResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/response/CartItemResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/CartServiceImplementation.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/CartServiceImplementation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/LorryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/LorryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/LorryService1.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/LorryService1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/OrderServiceImplementation.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/OrderServiceImplementation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/PaymentServiceImplementation.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/java/com/Lidigu/service/PaymentServiceImplementation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend-spring boot/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend-spring boot/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/Admin/Admin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/Admin/Admin.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/Admin/AdminSidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/Admin/AdminSidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/Admin/Material/AddMenuForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/Admin/Material/AddMenuForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/Admin/Orders/OrderTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/Admin/Orders/OrderTable.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/Routers/Routers.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/Routers/Routers.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/State/Customers/Menu/menu.action.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/State/Customers/Menu/menu.action.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/SuperAdmin/SuperAdmin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/SuperAdmin/SuperAdmin.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/config/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/config/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/customers/components/CartItem/CartItemCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/customers/components/CartItem/CartItemCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/customers/components/Login/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/customers/components/Login/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/customers/components/MenuItem/MenuItemCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/customers/components/MenuItem/MenuItemCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/customers/components/Navbar/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/customers/components/Navbar/Navbar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/customers/components/QuarryCard/QuarryCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/customers/components/QuarryCard/QuarryCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/customers/pages/Cart/Cart.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/customers/pages/Cart/Cart.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/customers/pages/Cart/totalPay.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/customers/pages/Cart/totalPay.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-react/src/customers/pages/Quarry/Quarry.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-react/src/customers/pages/Quarry/Quarry.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2yxSYtKwCiiu7YeFild5h66ueE8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "quarrymate-changes",
+    "junie.onboarding.icon.badge.shown": "true",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26927.53" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.26927.53" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0fc875b2-6322-40a3-9ba0-96758f6e11ea" name="Changes" comment="" />
+      <created>1750774787911</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1750774787911</updated>
+      <workItem from="1750774800380" duration="94000" />
+    </task>
+    <servers />
+  </component>
+</project>

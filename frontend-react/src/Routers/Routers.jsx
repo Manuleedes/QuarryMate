@@ -6,7 +6,6 @@ import AdminDashboard from "../Admin/Dashboard/AdminDashboard";
 import SuperAdmin from "../SuperAdmin/SuperAdmin";
 import { useSelector } from "react-redux";
 import NotFound from "../customers/pages/NotFound/NotFound";
-// import IngredientsList from "../Data/Demo";
 import CreateQuarryForm from "../Admin/AddQuarries/CreateQuarryForm";
 import AdminRouters from "./AdminRouters";
 

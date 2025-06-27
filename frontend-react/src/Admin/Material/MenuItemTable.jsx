@@ -15,48 +15,41 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-
 import React, { useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteMaterialAction,
   getMenuItemsByQuarryId,
   updateMenuItemsAvailability,
 } from "../../State/Customers/Menu/menu.action";
-import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Create, Remove } from "@mui/icons-material";
+import { Create } from "@mui/icons-material";
 
 const MenuItemTable = ({ isDashboard, name }) => {
-  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { menu,  quarry,auth } = useSelector((store) => store);
-  const { id } = useParams();
-  const jwt=localStorage.getItem("jwt");
+  const { menu, quarry, auth } = useSelector((store) => store);
+  const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
-    
-      if(quarry.usersQuarry){
-       dispatch( getMenuItemsByQuarryId({
-        quarryId: quarry.usersQuarry?.id,
-        jwt: localStorage.getItem("jwt"),
-        materialCategory: "",
-      }));
-      }
-      
-    
+    if (quarry.usersQuarry) {
+      dispatch(
+        getMenuItemsByQuarryId({
+          quarryId: quarry.usersQuarry.id,
+          jwt: auth.jwt || jwt,
+          materialCategory: "",
+        })
+      );
+    }
   }, [quarry.usersQuarry]);
 
-
-  const handleMaterialAvialability = (materialId) => {
-    dispatch(updateMenuItemsAvailability({materialId,jwt:auth.jwt || jwt}));
+  const handleMaterialAvailability = (materialId) => {
+    dispatch(updateMenuItemsAvailability({ materialId, jwt: auth.jwt || jwt }));
   };
 
   const handleDeleteMaterial = (materialId) => {
-    dispatch(deleteMaterialAction({materialId,jwt:auth.jwt || jwt}));
+    dispatch(deleteMaterialAction({ materialId, jwt: auth.jwt || jwt }));
   };
 
   return (
@@ -76,68 +69,76 @@ const MenuItemTable = ({ isDashboard, name }) => {
           }
         />
         <TableContainer>
-          <Table aria-label="table in dashboard">
-                    <TableHead>
-            <TableRow>
-              <TableCell>Image</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Weight (T)</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Price (Ksh)</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Lorries Required</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>Availability</TableCell>
-              {!isDashboard && (
-                <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-  {menu.menuItems?.map((item) => (
-    <TableRow hover key={item.id}>
-      <TableCell>
-        <Avatar alt={item.name} src={item.images?.[0]} />
-      </TableCell>
+          <Table aria-label="menu items table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Image</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell align="center">Unit</TableCell>
+                <TableCell align="center">Quantity</TableCell>
+                <TableCell align="center">Price per Unit (Ksh)</TableCell>
+                <TableCell align="center">Total Price (Ksh)</TableCell>
+                <TableCell align="center">Lorries Required</TableCell>
+                <TableCell align="center">Availability</TableCell>
+                {!isDashboard && (
+                  <TableCell align="center">Delete</TableCell>
+                )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {menu.menuItems?.map((item) => {
+                const pricePerUnit = item.pricePerUnit ?? 0;
+                const quantity = item.quantity ?? 0;
+                const totalPrice = pricePerUnit * quantity;
+                const lorriesRequired =
+                  item.pricingUnit === "PIECE"
+                    ? Math.ceil(quantity / 1000) // adjust if blocks (500) or pieces (1000)
+                    : Math.ceil(quantity / 18); // tonnes per lorry
 
-      <TableCell>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography sx={{ fontWeight: 500, fontSize: "0.875rem" }}>
-            {item.name}
-          </Typography>
-          <Typography variant="caption">{item.category}</Typography>
-        </Box>
-      </TableCell>
-
-      <TableCell sx={{ textAlign: "center" }}>
-        {item.weightInTonnes ?? "-"}
-      </TableCell>
-
-      <TableCell sx={{ textAlign: "center" }}>
-        Ksh.{(item.weightInTonnes * 10000).toLocaleString()}
-      </TableCell>
-
-      <TableCell sx={{ textAlign: "center" }}>
-        {item.weightInTonnes ? Math.ceil(item.weightInTonnes / 18) : "-"}
-      </TableCell>
-
-      <TableCell sx={{ textAlign: "center" }}>
-        <Button
-          color={item.available ? "success" : "error"}
-          variant="text"
-          onClick={() => handleMaterialAvialability(item.id)}
-        >
-          {item.available ? "in stock" : "out of stock"}
-        </Button>
-      </TableCell>
-
-      {!isDashboard && (
-        <TableCell sx={{ textAlign: "center" }}>
-          <IconButton onClick={() => handleDeleteMaterial(item.id)}>
-            <DeleteIcon color="error" />
-          </IconButton>
-        </TableCell>
-      )}
-    </TableRow>
-  ))}
-</TableBody>
+                return (
+                  <TableRow hover key={item.id}>
+                    <TableCell>
+                      <Avatar alt={item.name} src={item.images?.[0]} />
+                    </TableCell>
+                    <TableCell>
+                      <Box display="flex" flexDirection="column">
+                        <Typography sx={{ fontWeight: 500, fontSize: "0.875rem" }}>
+                          {item.name}
+                        </Typography>
+                        <Typography variant="caption">
+                          {item.category?.name ?? "-"}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell align="center">{item.pricingUnit}</TableCell>
+                    <TableCell align="center">{quantity}</TableCell>
+                    <TableCell align="center">
+                      Ksh.{pricePerUnit.toLocaleString()}
+                    </TableCell>
+                    <TableCell align="center">
+                      Ksh.{totalPrice.toLocaleString()}
+                    </TableCell>
+                    <TableCell align="center">{lorriesRequired}</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        color={item.available ? "success" : "error"}
+                        variant="text"
+                        onClick={() => handleMaterialAvailability(item.id)}
+                      >
+                        {item.available ? "In Stock" : "Out of Stock"}
+                      </Button>
+                    </TableCell>
+                    {!isDashboard && (
+                      <TableCell align="center">
+                        <IconButton onClick={() => handleDeleteMaterial(item.id)}>
+                          <DeleteIcon color="error" />
+                        </IconButton>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
           </Table>
         </TableContainer>
       </Card>
@@ -153,3 +154,5 @@ const MenuItemTable = ({ isDashboard, name }) => {
 };
 
 export default MenuItemTable;
+
+

@@ -18,15 +18,6 @@ import { getMenuItemsByQuarryId } from "../../../State/Customers/Menu/menu.actio
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TodayIcon from '@mui/icons-material/Today';
 
-// const categories = [
-//   "Thali",
-//   "Starters",
-//   "Kenya Main Course",
-//   "Rice and Biryani",
-//   "Breads",
-//   "Accompaniments",
-//   "Dessert",
-// ];
 
 const materialTypes = [
   {label:"All",value:"all"}
@@ -184,7 +175,6 @@ const Quarry = () => {
         <div className="lg:w-[80%] space-y-5 lg:pl-10">
           {menu?.menuItems.map((item) => (
             <MenuItemCard item={item} />
-            // <p>ashok</p>
           ))}
         </div>
       </section>

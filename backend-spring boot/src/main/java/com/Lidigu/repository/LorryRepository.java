@@ -9,5 +9,10 @@ import java.util.List;
 public interface LorryRepository extends JpaRepository<Lorry, Long> {
     @Query("SELECT l FROM Lorry l WHERE l.available = true ORDER BY l.capacityInTonnes DESC")
     List<Lorry> findAvailableLorriesOrderedByCapacityDesc();
+//    @Query(name = "Lorry.findAvailableLorriesOrderedByCapacityDesc")
+//   // @Query("SELECT l FROM Lorry l WHERE l.available = true ORDER BY l.capacityInTonnes DESC")
+//    List<Lorry> findAvailableLorriesOrderedByCapacityDesc();
+    List<Lorry> findByQuarryId(Long quarryId);
 
+    List<Lorry> findByNumberPlateContainingIgnoreCase(String plateNumber);
 }

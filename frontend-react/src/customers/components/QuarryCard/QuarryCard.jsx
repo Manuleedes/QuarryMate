@@ -34,7 +34,7 @@ const QuarryCard = ({ data, index }) => {
         />
         <Chip
           size="small"
-          // variant="outlined"
+          
           className="absolute top-2 left-2"
           color={data.open?"success":"error"}
           label={data.open ? "Open" : "Closed"}
@@ -43,9 +43,6 @@ const QuarryCard = ({ data, index }) => {
       <div className="p-4 textPart lg:flex w-full justify-between">
         <div className="space-y-1">
           <p className="font-semibold text-lg">{data.name}</p>
-          {/* <div>
-          <span>{data.rating}</span>
-        </div> */}
           <p className="text-gray-500 text-sm">
             {data.description.length > 40
               ? data.description.substring(0, 40) + "..."

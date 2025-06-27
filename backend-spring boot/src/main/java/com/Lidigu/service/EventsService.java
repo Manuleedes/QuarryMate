@@ -7,14 +7,14 @@ import com.Lidigu.model.Events;
 
 public interface EventsService {
 	
-	public Events createEvent(Events event,Long quarryId) throws QuarryException;
+	 Events createEvent(Events event,Long quarryId) throws QuarryException;
 	
-	public List<Events> findAllEvent();
+	 	List<Events> findAllEvent();
 	
-	public List<Events> findQuarriesEvent(Long id);
+	 List<Events> findQuarriesEvent(Long id);
 	
-	public void deleteEvent(Long id) throws Exception;
+	 void deleteEvent(Long id) throws Exception;
 	
-	public Events findById(Long id) throws Exception;
+	 Events findById(Long id) throws Exception;
 
 }

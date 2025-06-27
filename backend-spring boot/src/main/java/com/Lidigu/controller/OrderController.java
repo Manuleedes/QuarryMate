@@ -31,23 +31,32 @@ public class OrderController {
 	private OrderService orderService;
 	@Autowired
 	private UserService userService;
-	
-    @PostMapping("/order")
-	public ResponseEntity<PaymentResponse>  createOrder(@RequestBody CreateOrderRequest order,
-			@RequestHeader("Authorization") String jwt)
-            throws Exception {
-		User user=userService.findUserProfileByJwt(jwt);
-		System.out.println("req user "+user.getEmail());
-    	if(order!=null) {
-			PaymentResponse res = orderService.createOrder(order,user);
-			return ResponseEntity.ok(res);
-			
-    	}else throw new OrderException("Please provide valid request body");
-		
-    }
-    
 
-    @GetMapping("/order/user")
+	@PostMapping("/order")
+	public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest order,
+										 @RequestHeader("Authorization") String jwt) {
+		try {
+			User user = userService.findUserProfileByJwt(jwt);
+			if(order != null) {
+				PaymentResponse res = orderService.createOrder(order, user);
+				return ResponseEntity.ok(res);
+			} else {
+				throw new OrderException("Please provide valid request body");
+			}
+		} catch (Exception e) {
+			if (e.getMessage().contains("No available lorries")) {
+				return ResponseEntity
+						.status(HttpStatus.SERVICE_UNAVAILABLE)
+						.body("Currently no lorries are available to fulfill your order. Please try again later.");
+			}
+			return ResponseEntity
+					.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("An error occurred while processing your order: " + e.getMessage());
+		}
+	}
+
+
+	@GetMapping("/order/user")
     public ResponseEntity<List<Order>> getAllUserOrders(
 			@RequestHeader("Authorization") String jwt) throws OrderException, UserException{
     	User user=userService.findUserProfileByJwt(jwt);
