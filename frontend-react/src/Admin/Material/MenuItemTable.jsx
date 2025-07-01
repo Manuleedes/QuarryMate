@@ -2,7 +2,6 @@ import {
   Avatar,
   Backdrop,
   Box,
-  Button,
   Card,
   CardHeader,
   CircularProgress,
@@ -14,6 +13,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Chip,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteMaterialAction,
   getMenuItemsByQuarryId,
-  updateMenuItemsAvailability,
 } from "../../State/Customers/Menu/menu.action";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Create } from "@mui/icons-material";
@@ -32,7 +31,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
   const { menu, quarry, auth } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
 
-  useEffect(() => {
+  const fetchMenuItems = () => {
     if (quarry.usersQuarry) {
       dispatch(
         getMenuItemsByQuarryId({
@@ -42,11 +41,18 @@ const MenuItemTable = ({ isDashboard, name }) => {
         })
       );
     }
-  }, [quarry.usersQuarry]);
-
-  const handleMaterialAvailability = (materialId) => {
-    dispatch(updateMenuItemsAvailability({ materialId, jwt: auth.jwt || jwt }));
   };
+
+  useEffect(() => {
+    fetchMenuItems();
+
+    // Polling every 10 seconds for real-time updates
+    const interval = setInterval(() => {
+      fetchMenuItems();
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [quarry.usersQuarry]);
 
   const handleDeleteMaterial = (materialId) => {
     dispatch(deleteMaterialAction({ materialId, jwt: auth.jwt || jwt }));
@@ -92,8 +98,8 @@ const MenuItemTable = ({ isDashboard, name }) => {
                 const totalPrice = pricePerUnit * quantity;
                 const lorriesRequired =
                   item.pricingUnit === "PIECE"
-                    ? Math.ceil(quantity / 1000) // adjust if blocks (500) or pieces (1000)
-                    : Math.ceil(quantity / 18); // tonnes per lorry
+                    ? Math.ceil(quantity / 1000)
+                    : Math.ceil(quantity / 18);
 
                 return (
                   <TableRow hover key={item.id}>
@@ -111,7 +117,9 @@ const MenuItemTable = ({ isDashboard, name }) => {
                       </Box>
                     </TableCell>
                     <TableCell align="center">{item.pricingUnit}</TableCell>
-                    <TableCell align="center">{quantity}</TableCell>
+                    <TableCell align="center">
+                      {quantity} {item.pricingUnit === "TONNES" ? "T" : "Units"}
+                    </TableCell>
                     <TableCell align="center">
                       Ksh.{pricePerUnit.toLocaleString()}
                     </TableCell>
@@ -120,13 +128,11 @@ const MenuItemTable = ({ isDashboard, name }) => {
                     </TableCell>
                     <TableCell align="center">{lorriesRequired}</TableCell>
                     <TableCell align="center">
-                      <Button
+                      <Chip
+                        label={item.available ? "In Stock" : "Out of Stock"}
                         color={item.available ? "success" : "error"}
-                        variant="text"
-                        onClick={() => handleMaterialAvailability(item.id)}
-                      >
-                        {item.available ? "In Stock" : "Out of Stock"}
-                      </Button>
+                        size="small"
+                      />
                     </TableCell>
                     {!isDashboard && (
                       <TableCell align="center">
@@ -154,5 +160,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
 };
 
 export default MenuItemTable;
+
+
 
 

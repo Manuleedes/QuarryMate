@@ -36,37 +36,53 @@ public class CartServiceImplementation implements CartSerive {
 	public CartItem addItemToCart(AddCartItemRequest req, String jwt) throws UserException, MaterialException, CartException, CartItemException {
 
 		User user = userService.findUserProfileByJwt(jwt);
-		Optional<Material> menuItem=menuItemRepository.findById(req.getMenuItemId());
-		if(menuItem.isEmpty()) {
-			throw new MaterialException("Menu Item not exist with id "+req.getMenuItemId());
+		Optional<Material> menuItemOpt = menuItemRepository.findById(req.getMenuItemId());
+		if (menuItemOpt.isEmpty()) {
+			throw new MaterialException("Material not found with id " + req.getMenuItemId());
 		}
+		Material material = menuItemOpt.get();
+
+		if (!material.isAvailable()) {
+			throw new MaterialException("Material " + material.getName() + " is currently unavailable.");
+		}
+
+		double availableQuantity = material.getQuantity();
 		Cart cart = findCartByUserId(user.getId());
 
 		for (CartItem cartItem : cart.getItems()) {
-			if (cartItem.getMaterial().equals(menuItem.get())) {
-
+			if (cartItem.getMaterial().equals(material)) {
 				int newQuantity = cartItem.getQuantity() + req.getQuantity();
-				return updateCartItemQuantity(cartItem.getId(),newQuantity);
+				if (newQuantity > availableQuantity) {
+					throw new MaterialException("Cannot add to cart. Requested quantity (" + newQuantity + ") exceeds available stock (" + availableQuantity + ").");
+				}
+				return updateCartItemQuantity(cartItem.getId(), newQuantity);
 			}
 		}
 
+		if (req.getQuantity() > availableQuantity) {
+			throw new MaterialException("Cannot add to cart. Requested quantity (" + req.getQuantity() + ") exceeds available stock (" + availableQuantity + ").");
+		}
+
 		CartItem newCartItem = new CartItem();
-		newCartItem.setMaterial(menuItem.get());
+		newCartItem.setMaterial(material);
 		newCartItem.setQuantity(req.getQuantity());
 		newCartItem.setCart(cart);
+
 		double pricePerTonne = 2000.0;
 		double quantity = req.getQuantity();
 		long materialCost = (long) (quantity * pricePerTonne);
 		int lorriesRequired = (int) Math.ceil(quantity / 18.0);
 		long lorryCost = lorriesRequired * 25000;
 		long totalPrice = materialCost + lorryCost;
+
 		newCartItem.setTotalPrice(totalPrice);
-		CartItem savedItem=cartItemRepository.save(newCartItem);
+		CartItem savedItem = cartItemRepository.save(newCartItem);
 		cart.getItems().add(savedItem);
 		cartRepository.save(cart);
-		return savedItem;
 
+		return savedItem;
 	}
+
 
 
 	@Override

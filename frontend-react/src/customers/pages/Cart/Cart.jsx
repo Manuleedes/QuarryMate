@@ -1,11 +1,19 @@
-import { Button, Card, Divider, IconButton, Snackbar } from "@mui/material";
+import {
+  Button,
+  Card,
+  Divider,
+  IconButton,
+  Snackbar,
+  Box,
+  Modal,
+  Grid,
+  TextField,
+} from "@mui/material";
 import React, { Fragment, useEffect, useState } from "react";
 import AddressCard from "../../components/Address/AddressCard";
 import CartItemCard from "../../components/CartItem/CartItemCard";
 import { useDispatch, useSelector } from "react-redux";
-
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
-import { Box, Modal, Grid, TextField } from "@mui/material";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { createOrder } from "../../../State/Customers/Orders/Action";
@@ -13,6 +21,8 @@ import { findCart } from "../../../State/Customers/Cart/cart.action";
 import { isValid } from "../../util/ValidToOrder";
 import { cartTotal } from "./totalPay";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
+import { getMenuItemsByQuarryId } from "../../../State/Customers/Menu/menu.action";
+import { clearCartAction } from "../../../State/Customers/Cart/cart.action";
 
 const initialValues = {
   streetAddress: "",
@@ -43,25 +53,37 @@ const style = {
 };
 
 const Cart = () => {
-  const [openSnackbar, setOpenSnakbar] = useState();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const dispatch = useDispatch();
-  const { cart, auth } = useSelector((store) => store);
+  const { cart, auth, quarry } = useSelector((store) => store);
   const [openAddressModal, setOpenAddressModal] = useState(false);
-  console.log("cart ", cart);
 
-  const handleCloseAddressModal = () => {
-    setOpenAddressModal(false);
-  };
+  const jwt = localStorage.getItem("jwt");
 
+  const handleCloseAddressModal = () => setOpenAddressModal(false);
   const handleOpenAddressModal = () => setOpenAddressModal(true);
 
-  useEffect(() => {
-    dispatch(findCart(localStorage.getItem("jwt")));
-  }, []);
+  const refreshMaterials = async () => {
+    if (quarry.usersQuarry) {
+      await dispatch(
+        getMenuItemsByQuarryId({
+          quarryId: quarry.usersQuarry.id,
+          jwt: auth.jwt || jwt,
+          materialCategory: "",
+        })
+      );
+    }
+  };
 
-  const handleSubmit = (values, { resetForm }) => {
+  useEffect(() => {
+    if (jwt) {
+      dispatch(findCart(jwt));
+    }
+  }, [dispatch, jwt]);
+
+  const handleSubmit = async (values, { resetForm }) => {
     const data = {
-      jwt: localStorage.getItem("jwt"),
+      jwt,
       order: {
         quarryId: cart.cartItems[0].material?.quarry.id,
         deliveryAddress: {
@@ -74,40 +96,45 @@ const Cart = () => {
         },
       },
     };
-    console.log("data",data)
+
     if (isValid(cart.cartItems)) {
-      dispatch(createOrder(data));
-    } else setOpenSnakbar(true);
+      await dispatch(createOrder(data));
+      await dispatch(clearCartAction()); // clear cart after order
+      await refreshMaterials(); // refresh material quantities
+      resetForm();
+    } else {
+      setOpenSnackbar(true);
+    }
   };
 
-  const createOrderUsingSelectedAddress = (deliveryAddress) => {
+  const createOrderUsingSelectedAddress = async (deliveryAddress) => {
     const data = {
-      token: localStorage.getItem("jwt"),
+      jwt,
       order: {
         quarryId: cart.cartItems[0].material.quarry.id,
-        deliveryAddress: {
-          fullName: "Emmanuel Lidigu",
-          streetAddress: "Kariandusi",
-          city: "Nakuru",
-          state: "Rongai",
-          postalCode: "599000",
-          country: "Kenya",
-        },
+        deliveryAddress: deliveryAddress,
       },
     };
+
     if (isValid(cart.cartItems)) {
-      dispatch(createOrder(data));
-    } else setOpenSnakbar(true);
+      await dispatch(createOrder(data));
+      await dispatch(clearCartAction());
+      await refreshMaterials();
+    } else {
+      setOpenSnackbar(true);
+    }
   };
 
-  const handleCloseSankBar = () => setOpenSnakbar(false);
+  const handleCloseSnackbar = () => setOpenSnackbar(false);
+
   return (
     <Fragment>
       {cart.cartItems.length > 0 ? (
         <main className="lg:flex justify-between">
+          {/* Left Section: Cart Items */}
           <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
             {cart.cartItems.map((item, i) => (
-              <CartItemCard item={item} />
+              <CartItemCard item={item} key={item.id || i} />
             ))}
 
             <Divider />
@@ -116,70 +143,83 @@ const Cart = () => {
               <div className="space-y-3">
                 <div className="flex justify-between text-gray-400">
                   <p>Item Total</p>
-                  <p>Ksh.{cartTotal(cart.cartItems)}</p>
+                  <p>Ksh.{cartTotal(cart.cartItems).toLocaleString()}</p>
                 </div>
                 <div className="flex justify-between text-gray-400">
-                <p>Deliver Fee</p>
-                <p>Ksh.21</p>
-              </div>
+                  <p>Delivery Fee</p>
+                  <p>Ksh.21</p>
+                </div>
                 <div className="flex justify-between text-gray-400">
-                <p>Plateform Fee</p>
-                <p>Ksh.5</p>
-              </div>
+                  <p>Platform Fee</p>
+                  <p>Ksh.5</p>
+                </div>
                 <div className="flex justify-between text-gray-400">
-                <p>GST and Quarry Charges</p>
-                <p>Ksh.33</p>
-              </div>
+                  <p>GST and Quarry Charges</p>
+                  <p>Ksh.33</p>
+                </div>
                 <Divider />
-                <div className="flex justify-between text-gray-400">
+                <div className="flex justify-between text-gray-400 font-semibold">
                   <p>Total Pay</p>
-                  <p>Ksh.{cartTotal(cart.cartItems)+33}</p>
+                  <p>
+                    Ksh.
+                    {(
+                      cartTotal(cart.cartItems) +
+                      21 +
+                      5 +
+                      33
+                    ).toLocaleString()}
+                  </p>
                 </div>
               </div>
             </div>
           </section>
+
+          {/* Right Section: Address Selection */}
           <Divider orientation="vertical" flexItem />
           <section className="lg:w-[70%] flex justify-center px-5 pb-10 lg:pb-0">
-            <div className="">
+            <div className="w-full max-w-2xl">
               <h1 className="text-center font-semibold text-2xl py-10">
-              Choose Delivery Address
-            </h1>
-            <div className="flex gap-5 flex-wrap justify-center">
-              {auth.user?.addresses.map((item, index) => (
-                <AddressCard
-                  handleSelectAddress={createOrderUsingSelectedAddress}
-                  item={item}
-                  showButton={true}
-                />
-              ))}
-              <Card className="flex flex-col justify-center items-center p-5  w-64 ">
-                <div className="flex space-x-5">
-                  <AddLocationAltIcon />
-                  <div className="space-y-5">
-                    <p>Add New Address</p>
-                    <Button
-                      onClick={handleOpenAddressModal}
-                      sx={{ padding: ".75rem" }}
-                      fullWidth
-                      variant="contained"
-                    >
-                      Add
-                    </Button>
+                Choose Delivery Address
+              </h1>
+              <div className="flex gap-5 flex-wrap justify-center">
+                {auth.user?.addresses?.map((item, index) => (
+                  <AddressCard
+                    key={item.id || index}
+                    handleSelectAddress={createOrderUsingSelectedAddress}
+                    item={item}
+                    showButton={true}
+                  />
+                ))}
+
+                <Card className="flex flex-col justify-center items-center p-5 w-64">
+                  <div className="flex space-x-5 items-center">
+                    <AddLocationAltIcon />
+                    <div className="space-y-5">
+                      <p>Add New Address</p>
+                      <Button
+                        onClick={handleOpenAddressModal}
+                        fullWidth
+                        variant="contained"
+                      >
+                        Add
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            </div>
+                </Card>
+              </div>
             </div>
           </section>
         </main>
       ) : (
         <div className="flex h-[90vh] justify-center items-center">
           <div className="text-center space-y-5">
-            <RemoveShoppingCartIcon sx={{ width: "10rem", height: "10rem" }} />
-            <p className="font-bold text-3xl">Your Cart Is Empty</p>
+            <RemoveShoppingCartIcon sx={{ width: "8rem", height: "8rem" }} />
+            <p className="font-bold text-2xl">Your Cart Is Empty</p>
           </div>
         </div>
       )}
+
+      {/* Address Modal */}
       <Modal open={openAddressModal} onClose={handleCloseAddressModal}>
         <Box sx={style}>
           <Formik
@@ -196,12 +236,7 @@ const Cart = () => {
                     label="Street Address"
                     fullWidth
                     variant="outlined"
-                    error={!ErrorMessage("streetAddress")}
-                    helperText={
-                      <ErrorMessage name="streetAddress">
-                        {(msg) => <span className="text-red-600">{msg}</span>}
-                      </ErrorMessage>
-                    }
+                    helperText={<ErrorMessage name="streetAddress" />}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -211,12 +246,7 @@ const Cart = () => {
                     label="State"
                     fullWidth
                     variant="outlined"
-                    error={!ErrorMessage("state")}
-                    helperText={
-                      <ErrorMessage name="state">
-                        {(msg) => <span className="text-red-600">{msg}</span>}
-                      </ErrorMessage>
-                    }
+                    helperText={<ErrorMessage name="state" />}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -226,12 +256,7 @@ const Cart = () => {
                     label="Pincode"
                     fullWidth
                     variant="outlined"
-                    error={!ErrorMessage("pincode")}
-                    helperText={
-                      <ErrorMessage name="pincode">
-                        {(msg) => <span className="text-red-600">{msg}</span>}
-                      </ErrorMessage>
-                    }
+                    helperText={<ErrorMessage name="pincode" />}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -241,12 +266,7 @@ const Cart = () => {
                     label="City"
                     fullWidth
                     variant="outlined"
-                    error={!ErrorMessage("city")}
-                    helperText={
-                      <ErrorMessage name="city">
-                        {(msg) => <span className="text-red-600">{msg}</span>}
-                      </ErrorMessage>
-                    }
+                    helperText={<ErrorMessage name="city" />}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -259,17 +279,19 @@ const Cart = () => {
           </Formik>
         </Box>
       </Modal>
+
+      {/* Snackbar */}
       <Snackbar
-        severity="success"
         open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSankBar}
-        message="Please Add Items Only From One Restaurants At time"
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        message="Please add items from one quarry only when placing an order."
       />
     </Fragment>
   );
 };
 
 export default Cart;
+
 
 

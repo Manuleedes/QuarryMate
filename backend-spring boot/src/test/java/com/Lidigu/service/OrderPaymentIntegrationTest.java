@@ -87,7 +87,7 @@ public class OrderPaymentIntegrationTest {
         OrderItem orderItem = new OrderItem();
         orderItem.setId(1L);
         orderItem.setMaterial(material);
-        orderItem.setQuantity(10);
+        orderItem.setQuantity(10.0);
         orderItem.setTotalPrice(20000L);
 
         Order order = new Order();

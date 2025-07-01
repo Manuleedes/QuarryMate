@@ -31,8 +31,7 @@ public class MaterialServiceImplementation implements MaterialService {
 	public Material createMaterial(CreateMaterialRequest req,
 								   Category category,
 								   Quarry quarry)
-			throws MaterialException,
-			QuarryException {
+			throws MaterialException, QuarryException {
 
 		try {
 			Material material = new Material();
@@ -41,11 +40,12 @@ public class MaterialServiceImplementation implements MaterialService {
 			material.setDescription(req.getDescription());
 			material.setImages(req.getImages());
 			material.setName(req.getName());
-			material.setQuantity(req.getQuantity() != null ? req.getQuantity() : 0.0);
+			Double quantity = req.getQuantity() != null ? req.getQuantity() : 0.0;
+			material.setQuantity(quantity);
 			material.setPricePerUnit(req.getPrice());
 			material.setQuarry(quarry);
 			material.setPricingUnit(req.getPricingUnit() != null ? req.getPricingUnit() : PricingUnit.TONNE);
-			material.setAvailable(true);
+			material.setAvailable(quantity > 0);
 
 			material = materialRepository.save(material);
 
@@ -59,6 +59,25 @@ public class MaterialServiceImplementation implements MaterialService {
 			throw new MaterialException("Failed to create material: " + e.getMessage());
 		}
 	}
+	@Override
+	public Material reduceQuantityAfterPayment(Long materialId, Double quantityOrdered) throws MaterialException {
+		Material material = findMaterialById(materialId);
+
+		if (quantityOrdered > material.getQuantity()) {
+			throw new MaterialException("Ordered quantity exceeds available stock for material: " + material.getName());
+		}
+
+		material.setQuantity(material.getQuantity() - quantityOrdered);
+
+		if (material.getQuantity() <= 0) {
+			material.setAvailable(false);
+			material.setQuantity(0.0); // Ensure it does not go negative
+		}
+
+		materialRepository.save(material);
+		return material;
+	}
+
 
 
 
@@ -96,11 +115,18 @@ public class MaterialServiceImplementation implements MaterialService {
 	@Override
 	public Material updateAvailabilityStatus(Long id) throws MaterialException {
 		Material material = findMaterialById(id);
-		
-		material.setAvailable(!material.isAvailable());
+
+		// If quantity is zero, force it to unavailable
+		if (material.getQuantity() <= 0) {
+			material.setAvailable(false);
+		} else {
+			material.setAvailable(!material.isAvailable());
+		}
+
 		materialRepository.save(material);
 		return material;
 	}
+
 
 	@Override
 	public Material findMaterialById(Long materialId) throws MaterialException {

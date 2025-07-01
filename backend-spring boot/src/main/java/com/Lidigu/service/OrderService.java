@@ -26,7 +26,7 @@ public interface OrderService {
 
 	 void allocateLorriesToOrder(Order order, double totalWeight) throws Exception;
 
-
+	void confirmPayment(Long orderId) throws Exception;
 
 
 }

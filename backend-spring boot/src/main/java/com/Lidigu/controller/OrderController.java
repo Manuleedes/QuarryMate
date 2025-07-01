@@ -5,12 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.stripe.exception.StripeException;
 import com.Lidigu.Exception.CartException;
@@ -68,7 +63,16 @@ public class OrderController {
     		return new ResponseEntity<List<Order>>(HttpStatus.BAD_REQUEST);
     	}
     }
-    
+//
+//	@PostMapping("/orders/{orderId}/pay")
+//	public ResponseEntity<String> confirmOrderPayment(@PathVariable Long orderId) {
+//		try {
+//			orderService.confirmPayment(orderId);
+//			return ResponseEntity.ok("Order payment confirmed and stock updated.");
+//		} catch (Exception e) {
+//			return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+//		}
+//	}
 
     
 

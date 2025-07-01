@@ -3,6 +3,7 @@ package com.Lidigu.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class OrderServiceImplementation implements OrderService {
 	@Autowired private QuarryRepository quarryRepository;
 	@Autowired private UserRepository userRepository;
 	@Autowired private PaymentService paymentService;
+	@Autowired private MaterialService materialService;
 	@Autowired private materialRepository materialRepository;
 	@Autowired private NotificationService notificationService;
 	@Autowired private LorryRepository lorryRepository;
@@ -62,7 +64,7 @@ public PaymentResponse createOrder(CreateOrderRequest order, User user) throws E
 
 		OrderItem orderItem = new OrderItem();
 		orderItem.setMaterial(cartItem.getMaterial());
-		orderItem.setQuantity(cartItem.getQuantity());
+		orderItem.setQuantity((double) cartItem.getQuantity());
 		orderItem.setTotalPrice(cartItem.getTotalPrice());
 
 		totalWeight += cartItem.getQuantity();
@@ -139,7 +141,7 @@ public PaymentResponse createOrder(CreateOrderRequest order, User user) throws E
 		System.out.println("Attempting to allocate lorries for weight: " + totalWeight);
 
 		if (availableLorries.isEmpty()) {
-			order.setOrderStatus("PENDING_TRANSPORT");
+			order.setOrderStatus("PENDING");
 			order.setLorryCost(0L);
 			System.out.println("No lorries available - Order proceeding without transport allocation");
 			return;
@@ -150,7 +152,7 @@ public PaymentResponse createOrder(CreateOrderRequest order, User user) throws E
 				.sum();
 
 		if (totalAvailableCapacity < totalWeight) {
-			order.setOrderStatus("PENDING_TRANSPORT");
+			order.setOrderStatus("PENDING");
 			order.setLorryCost(0L);
 			System.out.println("Insufficient capacity - Order proceeding without transport allocation");
 			return;
@@ -184,7 +186,7 @@ public PaymentResponse createOrder(CreateOrderRequest order, User user) throws E
 			if (remainingWeight > 0) {
 				// Partial allocation not sufficient
 				rollbackAllocations(allocated);
-				order.setOrderStatus("PENDING_TRANSPORT");
+				order.setOrderStatus("PENDING");
 				order.setLorryCost(0L);
 				System.out.println("Partial allocation insufficient - Order proceeding without transport allocation");
 				return;
@@ -199,11 +201,39 @@ public PaymentResponse createOrder(CreateOrderRequest order, User user) throws E
 
 		} catch (Exception e) {
 			rollbackAllocations(allocated);
-			order.setOrderStatus("PENDING_TRANSPORT");
+			order.setOrderStatus("PENDING");
 			order.setLorryCost(0L);
 			System.out.println("Error during allocation - Rolling back: " + e.getMessage());
 		}
 	}
+
+	@Override
+	@Transactional
+	public void confirmPayment(Long orderId) throws Exception {
+		Order order = orderRepository.findById(orderId)
+				.orElseThrow(() -> new OrderException("Order not found with ID: " + orderId));
+
+		if (!(order.getOrderStatus().equalsIgnoreCase("PENDING") ||
+				order.getOrderStatus().equalsIgnoreCase("PENDING_TRANSPORT"))) {
+			throw new OrderException("Order is not in a payable state (must be PENDING or PENDING_TRANSPORT)");
+		}
+
+		for (OrderItem item : order.getItems()) {
+			materialService.reduceQuantityAfterPayment(
+					item.getMaterial().getId(),
+					item.getQuantity()
+			);
+		}
+
+		order.setOrderStatus("PAID");
+		orderRepository.save(order);
+
+		notificationService.sendOrderStatusNotification(order);
+
+		System.out.println("Order payment confirmed and material quantities updated successfully.");
+	}
+
+
 
 	private void rollbackAllocations(List<Lorry> allocated) {
 		allocated.forEach(lorry -> {

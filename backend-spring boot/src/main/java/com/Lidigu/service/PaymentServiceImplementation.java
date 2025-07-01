@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentServiceImplementation implements PaymentService{
+public class PaymentServiceImplementation implements PaymentService {
 
 	@Value("${stripe.api.key}")
 	private String stripeSecretKey;
@@ -35,13 +35,18 @@ public class PaymentServiceImplementation implements PaymentService{
 			SessionCreateParams params = SessionCreateParams.builder()
 					.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
 					.setMode(SessionCreateParams.Mode.PAYMENT)
-					.setSuccessUrl("http://localhost:3000/payment/success/"+order.getId())
+					.setSuccessUrl("http://localhost:3000/payment/success/" + order.getId())
 					.setCancelUrl("http://localhost:3000/payment/fail")
+					.setPaymentIntentData(
+							SessionCreateParams.PaymentIntentData.builder()
+									.putMetadata("orderId", String.valueOf(order.getId()))
+									.build()
+					)
 					.addLineItem(SessionCreateParams.LineItem.builder()
 							.setQuantity(1L)
 							.setPriceData(SessionCreateParams.LineItem.PriceData.builder()
 									.setCurrency("usd")
-									.setUnitAmount((long) order.getTotalAmount()*100) // Specify the order amount in cents
+									.setUnitAmount((long) order.getTotalAmount() * 100) // in cents
 									.setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
 											.setName(productName)
 											.build())
@@ -61,26 +66,11 @@ public class PaymentServiceImplementation implements PaymentService{
 			System.err.println("Stripe error occurred: " + e.getMessage());
 			System.err.println("Stripe error code: " + e.getCode());
 			System.err.println("Stripe error status code: " + e.getStatusCode());
-			throw e; // Re-throw the exception after logging
+			throw e;
 		} catch (Exception e) {
 			System.err.println("Unexpected error in payment processing: " + e.getMessage());
 			e.printStackTrace();
 			throw new RuntimeException("Unexpected error in payment processing: " + e.getMessage(), e);
 		}
 	}
-//	Session session = null;
-//        try {
-//		session = Session.create(params);
-//	}catch (StripeException e){
-//		System.out.println(e.getMessage());
-//	}
-//        assert session != null;
-//        return StripeResponse.builder()
-//				.status("SUCCESS")
-//                .message("Payment Session created")
-//                .sessionId(session.getId())
-//			.sessionUrl(session.getUrl())
-//			.build();
-//}
-
 }

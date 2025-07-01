@@ -1,5 +1,6 @@
 package com.Lidigu.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,13 +18,15 @@ public class OrderItem {
     @ManyToOne
     private Material material;
     
-    private int quantity;
+    private Double quantity;
     private Long totalPrice;
 
     @OneToOne
     private Lorry lorry;
-    
 
+    @ManyToOne
+    @JsonBackReference
+    private Order order;
 
 }
 

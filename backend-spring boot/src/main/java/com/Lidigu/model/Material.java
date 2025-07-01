@@ -43,6 +43,16 @@ public class Material {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-
+    public void reduceQuantity(double quantityOrdered) {
+        if (this.quantity >= quantityOrdered) {
+            this.quantity -= quantityOrdered;
+            if (this.quantity <= 0) {
+                this.available = false;
+                this.quantity = 0.0;
+            }
+        } else {
+            throw new IllegalArgumentException("Insufficient stock for material: " + this.name);
+        }
+    }
     
 }

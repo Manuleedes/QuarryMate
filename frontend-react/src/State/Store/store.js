@@ -4,8 +4,9 @@ import authReducer from "../Authentication/Reducer";
 import quarryReducer from "../Customers/Quarry/Reducer";
 import menuItemReducer from "../Customers/Menu/Reducer";
 import cartReducer from "../Customers/Cart/Reducer";
+import lorryReducer from "../Admin/Lorry/Reducer"
 import { orderReducer } from "../Customers/Orders/order.reducer";
-// import quarriesOrderReducer from "../Admin/Order/quarries.order.reducer";
+import quarriesOrderReducer from "../Admin/Order/quarries.order.reducer";
 import superAdminReducer from "../SuperAdmin/superAdmin.reducer";
 
 
@@ -31,8 +32,9 @@ const rootReducer = combineReducers({
   menu: menuItemReducer,
   cart: cartReducer,
   order: orderReducer,
+  lorry:lorryReducer,
   // admin
-  // quarriesOrder: quarriesOrderReducer,
+   quarriesOrder: quarriesOrderReducer,
   // ingredients: ingredientReducer,
   // super admin
   superAdmin: superAdminReducer,

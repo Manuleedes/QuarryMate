@@ -19,8 +19,8 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
   fetchQuarriesOrder,
   updateOrderStatus,
@@ -34,12 +34,11 @@ const orderStatusOptions = [
 ];
 
 const OrdersTable = ({ isDashboard, name }) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { quarryId } = useParams();
   const jwt = localStorage.getItem("jwt");
 
-  const quarriesOrder = useSelector((store) => store.quarriesOrder) || {
+  const { orders, loading, error } = useSelector((store) => store.quarriesOrder) || {
     loading: false,
     orders: [],
     error: null,
@@ -47,10 +46,16 @@ const OrdersTable = ({ isDashboard, name }) => {
 
   const [anchorElArray, setAnchorElArray] = useState([]);
 
-  useEffect(() => {
+  const fetchOrders = () => {
     if (jwt && quarryId) {
       dispatch(fetchQuarriesOrder({ quarryId, orderStatus: "", jwt }));
     }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+    const interval = setInterval(fetchOrders, 10000);
+    return () => clearInterval(interval);
   }, [dispatch, jwt, quarryId]);
 
   const handleUpdateStatusMenuClick = (event, index) => {
@@ -81,7 +86,7 @@ const OrdersTable = ({ isDashboard, name }) => {
     <Box>
       <Card className="mt-1">
         <CardHeader
-          title={name || "Orders"}
+          title={name || "Quarry Orders"}
           sx={{
             pt: 2,
             alignItems: "center",
@@ -89,38 +94,37 @@ const OrdersTable = ({ isDashboard, name }) => {
           }}
         />
 
-        {quarriesOrder.error && (
+        {error && (
           <Typography color="error" align="center" sx={{ p: 2 }}>
-            {getErrorMessage(quarriesOrder.error)}
+            {getErrorMessage(error)}
           </Typography>
         )}
 
         <TableContainer>
-          <Table aria-label="orders table">
+          <Table aria-label="quarry orders table">
             <TableHead>
               <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell>Image</TableCell>
+                <TableCell>Order ID</TableCell>
+                <TableCell>Images</TableCell>
                 <TableCell>Customer</TableCell>
                 <TableCell>Total Price</TableCell>
                 <TableCell>Materials</TableCell>
-                <TableCell>Weight (Tonnes)</TableCell>
-                <TableCell>Lorries Needed</TableCell>
+                <TableCell>Quantity</TableCell>
+                <TableCell>Allocated Lorries</TableCell>
                 {!isDashboard && <TableCell>Status</TableCell>}
                 {!isDashboard && (
-                  <TableCell sx={{ textAlign: "center" }}>Update</TableCell>
+                  <TableCell align="center">Update</TableCell>
                 )}
               </TableRow>
             </TableHead>
             <TableBody>
-              {quarriesOrder?.orders?.length > 0 ? (
-                quarriesOrder.orders.map((item, index) => (
-                  <TableRow hover key={item.id}>
-                    <TableCell>{item?.id}</TableCell>
-
+              {orders?.length > 0 ? (
+                orders.map((order, index) => (
+                  <TableRow hover key={order.id}>
+                    <TableCell>{order.id}</TableCell>
                     <TableCell>
                       <AvatarGroup max={4}>
-                        {item.items?.map((orderItem) => (
+                        {order.items?.map((orderItem) => (
                           <Avatar
                             key={orderItem.id}
                             alt={orderItem.material?.name}
@@ -129,76 +133,73 @@ const OrdersTable = ({ isDashboard, name }) => {
                         ))}
                       </AvatarGroup>
                     </TableCell>
-
-                    <TableCell>{item?.customer?.email || "N/A"}</TableCell>
-
+                    <TableCell>{order.customer?.email || "N/A"}</TableCell>
                     <TableCell>
-                      Ksh.{item?.totalAmount?.toLocaleString() || "0"}
+                      Ksh.{order.totalAmount?.toLocaleString() || "0"}
                     </TableCell>
-
                     <TableCell>
-                      {item.items?.map((orderItem) => (
-                        <p key={orderItem.id}>{orderItem.material?.name}</p>
+                      {order.items?.map((orderItem) => (
+                        <Typography key={orderItem.id}>
+                          {orderItem.material?.name}
+                        </Typography>
                       ))}
                     </TableCell>
-
                     <TableCell>
-                      {item.items?.map((orderItem) => (
-                        <p key={orderItem.id}>{orderItem.weight} T</p>
+                      {order.items?.map((orderItem) => (
+                        <Typography key={orderItem.id}>
+                          {orderItem.quantity}
+                        </Typography>
                       ))}
                     </TableCell>
-
                     <TableCell>
-                      {item.items?.map((orderItem) => {
-                        const lorries = Math.ceil(orderItem.weight / 18);
-                        return (
-                          <p key={orderItem.id}>
-                            {lorries} lorr{lorries > 1 ? "ies" : "y"}
-                          </p>
-                        );
-                      })}
+                      {order.items?.map((orderItem) => (
+                        <Typography key={orderItem.id}>
+                          {orderItem.lorries ?? orderItem.allocatedLorries ?? 0}{" "}
+                          {orderItem.lorries === 1 ? "lorry" : "lorries"}
+                        </Typography>
+                      ))}
                     </TableCell>
-
                     {!isDashboard && (
                       <TableCell>
                         <Chip
-                          label={item?.orderStatus || "N/A"}
+                          label={order.orderStatus}
                           color={
-                            item.orderStatus === "PENDING"
+                            order.orderStatus === "PENDING"
                               ? "info"
-                              : item.orderStatus === "DELIVERED"
+                              : order.orderStatus === "DELIVERED"
                               ? "success"
                               : "secondary"
                           }
                         />
                       </TableCell>
                     )}
-
                     {!isDashboard && (
-                      <TableCell sx={{ textAlign: "center" }}>
+                      <TableCell align="center">
                         <Button
-                          aria-controls={`basic-menu-${item.id}`}
-                          onClick={(e) => handleUpdateStatusMenuClick(e, index)}
+                          aria-controls={`status-menu-${order.id}`}
+                          onClick={(e) =>
+                            handleUpdateStatusMenuClick(e, index)
+                          }
                         >
-                          Status
+                          Update
                         </Button>
                         <Menu
                           anchorEl={anchorElArray[index]}
                           open={Boolean(anchorElArray[index])}
                           onClose={() => handleUpdateStatusMenuClose(index)}
                         >
-                          {orderStatusOptions.map((statusOption) => (
+                          {orderStatusOptions.map((option) => (
                             <MenuItem
-                              key={statusOption.value}
+                              key={option.value}
                               onClick={() =>
                                 handleUpdateOrder(
-                                  item.id,
-                                  statusOption.value,
+                                  order.id,
+                                  option.value,
                                   index
                                 )
                               }
                             >
-                              {statusOption.label}
+                              {option.label}
                             </MenuItem>
                           ))}
                         </Menu>
@@ -209,9 +210,7 @@ const OrdersTable = ({ isDashboard, name }) => {
               ) : (
                 <TableRow>
                   <TableCell colSpan={9} align="center">
-                    {quarriesOrder.loading
-                      ? "Loading orders..."
-                      : "No orders found."}
+                    {loading ? "Loading orders..." : "No orders found."}
                   </TableCell>
                 </TableRow>
               )}
@@ -222,7 +221,7 @@ const OrdersTable = ({ isDashboard, name }) => {
 
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={quarriesOrder?.loading}
+        open={loading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -231,6 +230,8 @@ const OrdersTable = ({ isDashboard, name }) => {
 };
 
 export default OrdersTable;
+
+
 
 
 

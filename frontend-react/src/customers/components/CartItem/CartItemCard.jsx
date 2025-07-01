@@ -25,23 +25,24 @@ const CartItemCard = ({ item }) => {
         </div>
 
         <div className="flex items-center justify-between lg:w-full mt-2 lg:mt-0">
-        <div className="space-y-1 lg:space-y-2 w-full">
-  <p className="font-medium">{item.material.name}</p>
+          <div className="space-y-1 lg:space-y-2 w-full">
+            <p className="font-medium">{item.material.name}</p>
 
-  <p className="text-sm text-gray-500">
-  Tonnes Ordered: <span className="font-semibold">{item.quantity}</span>
-</p>
+            <p className="text-sm text-gray-500">
+              Tonnes Ordered:{" "}
+              <span className="font-semibold">{item.quantity}</span>
+            </p>
 
-<p className="text-sm text-gray-500">
-  Total Price:{" "}
-  <span className="font-semibold">
-    Ksh.{" "}
-    {item.totalPrice !== undefined && item.totalPrice !== null
-      ? item.totalPrice
-      : item.quantity * 2000}
-  </span>
-</p>
-</div>
+            <p className="text-sm text-gray-500">
+              Total Price:{" "}
+              <span className="font-semibold">
+                Ksh.{" "}
+                {item.totalPrice !== undefined && item.totalPrice !== null
+                  ? item.totalPrice.toLocaleString()
+                  : "N/A"}
+              </span>
+            </p>
+          </div>
 
           <IconButton
             onClick={handleRemoveCartItem}

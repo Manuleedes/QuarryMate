@@ -24,4 +24,7 @@ public interface MaterialService {
 	 Material findMaterialById(Long materialId) throws MaterialException;
 
 	 Material updateAvailabilityStatus(Long materialId) throws MaterialException;
+
+	 Material reduceQuantityAfterPayment(Long materialId, Double quantityOrdered) throws MaterialException;
+
 }

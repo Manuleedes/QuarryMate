@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import HomePage from '../customers/pages/Home/HomePage'
+import OrderFromHandpickedPage from "../customers/pages/Home/OrderFromHandpickedPage";
 import Navbar from '../customers/components/Navbar/Navbar'
 import Cart from '../customers/pages/Cart/Cart'
 import Profile from '../customers/pages/Profile/Profile'
@@ -21,6 +22,7 @@ const CustomerRoutes = () => {
         </nav>
         <Routes>
             <Route exact path='/' element={<HomePage/>}/>
+            <Route path="/order-from-handpicked" element={<OrderFromHandpickedPage />} />
             <Route exact path='/account/:register' element={<HomePage/>}/>
             <Route exact path='/quarry/:city/:title/:id' element={<Quarry/>}/>
             <Route path='/cart' element={<Cart/>}/>
