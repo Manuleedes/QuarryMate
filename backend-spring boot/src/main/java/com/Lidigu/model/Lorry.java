@@ -19,14 +19,16 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "Lorry.findAvailableLorriesOrderedByCapacityDesc",
-                query = "SELECT l FROM Lorry l WHERE l.available = true ORDER BY l.capacityInTonnes DESC"
+                query = "SELECT l FROM Lorry l WHERE l.available = true ORDER BY l.allocationCost DESC"
         )
 })
 public class Lorry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String Name;
+
+    private String name;
+
     @NotBlank
     private String numberPlate;
 
@@ -38,13 +40,13 @@ public class Lorry {
     private Quarry quarry;
 
     private String description;
+
     @ElementCollection
     @Column(length = 1000)
     private List<String> images;
 
     private long allocationCost;
-    @NotNull
-    private long  capacityInTonnes;
+
     @Enumerated(EnumType.STRING)
     private LorryStatus status = LorryStatus.AVAILABLE;
 
@@ -53,7 +55,6 @@ public class Lorry {
     @JoinColumn(name = "order_id")
     private Order order;
 
-
-
-
+    @OneToOne
+    private OrderItem orderItem;
 }

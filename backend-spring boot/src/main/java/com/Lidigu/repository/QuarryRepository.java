@@ -1,7 +1,9 @@
 package com.Lidigu.repository;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.Lidigu.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,6 +19,5 @@ public interface QuarryRepository extends JpaRepository<Quarry, Long> {
 
 	Quarry findByOwnerId(Long userId);
 
-
-
+	Optional<Quarry> findByOwner(User user);
 }

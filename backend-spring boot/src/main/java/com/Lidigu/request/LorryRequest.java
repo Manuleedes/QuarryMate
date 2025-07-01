@@ -1,5 +1,6 @@
 package com.Lidigu.request;
 
+import com.Lidigu.model.Quarry;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 public class LorryRequest {
     private String plateNumber;
-    private double capacityInTonnes;
+    private Long quarryId;
+   // private double capacityInTonnes;
     private String lorryName;
     private String description;
     private List<String> images;

@@ -1,5 +1,3 @@
-
-
 import { api } from "../../../config/api";
 import {
   createLorryRequest,
@@ -23,12 +21,12 @@ import {
 } from "./ActionCreators";
 
 
-export const createLorry = ({ plateNumber, capacityInTonnes, lorryName, description,images, jwt }) => async (dispatch) => {
+export const createLorry = ({ plateNumber, lorryName, description, images, quarryId, jwt }) => async (dispatch) => {
   dispatch(createLorryRequest());
   try {
     const { data } = await api.post(
       `/api/admin/lorries/add`,
-      { plateNumber, capacityInTonnes, lorryName, description,images },
+      { plateNumber, lorryName, description, images, quarryId },
       {
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -40,7 +38,6 @@ export const createLorry = ({ plateNumber, capacityInTonnes, lorryName, descript
     dispatch(createLorryFailure(error.response?.data?.message || error.message));
   }
 };
-
 
 export const getAvailableLorries = ({ jwt }) => async (dispatch) => {
   dispatch(getAvailableLorriesRequest());
@@ -56,7 +53,6 @@ export const getAvailableLorries = ({ jwt }) => async (dispatch) => {
   }
 };
 
-
 export const getLorriesByQuarryId = ({ quarryId, jwt }) => async (dispatch) => {
   dispatch(getLorriesRequest());
   try {
@@ -70,7 +66,6 @@ export const getLorriesByQuarryId = ({ quarryId, jwt }) => async (dispatch) => {
     dispatch(getLorriesFailure(error.response?.data?.message || error.message));
   }
 };
-
 
 export const deleteLorry = ({ lorryId, jwt }) => async (dispatch) => {
   dispatch(deleteLorryRequest());
@@ -86,7 +81,6 @@ export const deleteLorry = ({ lorryId, jwt }) => async (dispatch) => {
   }
 };
 
-
 export const searchLorries = ({ plate, jwt }) => async (dispatch) => {
   dispatch(searchLorryRequest());
   try {
@@ -101,7 +95,6 @@ export const searchLorries = ({ plate, jwt }) => async (dispatch) => {
     dispatch(searchLorryFailure(error.response?.data?.message || error.message));
   }
 };
-
 
 export const updateLorryAvailability = ({ lorryId, available, jwt }) => async (dispatch) => {
   dispatch(updateLorryAvailabilityRequest());
@@ -121,6 +114,7 @@ export const updateLorryAvailability = ({ lorryId, available, jwt }) => async (d
     dispatch(updateLorryAvailabilityFailure(error.response?.data?.message || error.message));
   }
 };
+
 
 
 

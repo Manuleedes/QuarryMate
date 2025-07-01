@@ -1,6 +1,6 @@
 package com.Lidigu.model;
 
-import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 
@@ -26,10 +26,8 @@ public class Material {
     @Enumerated(EnumType.STRING)
     private PricingUnit pricingUnit;
 
-
     @ManyToOne
     private Category materialCategory;
-
 
     @ElementCollection
     @Column(length = 1000)

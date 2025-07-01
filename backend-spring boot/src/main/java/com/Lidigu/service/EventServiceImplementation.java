@@ -18,11 +18,11 @@ public class EventServiceImplementation implements EventsService {
 	private EventRepository eventRepository;
 
 	@Autowired
-	private QuarryService restaurantService;
+	private QuarryService quarryService;
 	
 	@Override
-	public Events createEvent(Events event,Long restaurantId) throws QuarryException {
-		Quarry quarry=restaurantService.findQuarryById(restaurantId);
+	public Events createEvent(Events event,Long quarryId) throws QuarryException {
+		Quarry quarry=quarryService.findQuarryById(quarryId);
 		
 		Events createdEvent=new Events();
 		createdEvent.setQuarry(quarry);

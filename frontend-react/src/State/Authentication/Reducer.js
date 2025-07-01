@@ -21,7 +21,9 @@ const initialState = {
   user: null,
   isLoading: false,
   error: null,
-  jwt: null,
+  jwt: localStorage.getItem("jwt") || null,
+  role: localStorage.getItem("role") || null,
+  quarryId: localStorage.getItem("quarryId") || null,
   favorites: [],
   success: null,
 };
@@ -43,22 +45,13 @@ const authReducer = (state = initialState, action) => {
         success: "Register Success",
       };
 
-    case ADD_TO_FAVORITES_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        error: null,
-        // favorites:[action.payload,...state.favorites],
-        favorites: isPresentInFavorites(state.favorites, action.payload)
-          ? state.favorites.filter((item) => item.id !== action.payload.id)
-          : [action.payload, ...state.favorites],
-      };
-
     case LOGIN_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        jwt: action.payload,
+        jwt: action.payload.jwt,
+        role: action.payload.role,
+        quarryId: action.payload.quarryId || null,
         success: "Login success",
       };
 
@@ -69,7 +62,17 @@ const authReducer = (state = initialState, action) => {
         user: action.payload,
         favorites: action.payload.favorites,
       };
-      
+
+    case ADD_TO_FAVORITES_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        favorites: isPresentInFavorites(state.favorites, action.payload)
+          ? state.favorites.filter((item) => item.id !== action.payload.id)
+          : [action.payload, ...state.favorites],
+      };
+
     case REQUEST_RESET_PASSWORD_SUCCESS:
       return {
         ...state,
@@ -85,10 +88,21 @@ const authReducer = (state = initialState, action) => {
 
     case LOGOUT:
       localStorage.removeItem("jwt");
-      return { ...state, jwt: null, user: null, success: "logout success" };
+      localStorage.removeItem("role");
+      localStorage.removeItem("quarryId");
+      return {
+        ...state,
+        jwt: null,
+        role: null,
+        quarryId: null,
+        user: null,
+        success: "Logout success",
+      };
+
     default:
       return state;
   }
 };
 
 export default authReducer;
+

@@ -103,7 +103,7 @@ public class OrderPaymentIntegrationTest {
 
         Lorry lorry = new Lorry();
         lorry.setId(1L);
-        lorry.setCapacityInTonnes(18L);
+        lorry.setAllocatedWeight(18L);
         lorry.setNumberPlate("TEST123");
         lorry.setAvailable(true);
 

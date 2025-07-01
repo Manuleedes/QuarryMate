@@ -24,7 +24,7 @@ import com.Lidigu.request.CreateMaterialRequest;
 public class MaterialServiceImplementation implements MaterialService {
 	@Autowired
 	private materialRepository materialRepository;
-//	@Autowired
+	@Autowired
 	private QuarryRepository quarryRepository;
 
 
@@ -45,7 +45,7 @@ public class MaterialServiceImplementation implements MaterialService {
 			material.setPricePerUnit(req.getPrice());
 			material.setQuarry(quarry);
 			material.setPricingUnit(req.getPricingUnit() != null ? req.getPricingUnit() : PricingUnit.TONNE);
-			material.setAvailable(true); // Set default availability
+			material.setAvailable(true);
 
 			material = materialRepository.save(material);
 
@@ -64,10 +64,9 @@ public class MaterialServiceImplementation implements MaterialService {
 
 	@Override
 	public void deleteMaterial(Long materialId) throws MaterialException {
-		Material food= findMaterialById(materialId);
-		food.setQuarry(null);;
-//		foodRepository.save(food);
-		materialRepository.delete(food);
+		Material m1= findMaterialById(materialId);
+		m1.setQuarry(null);;
+		materialRepository.delete(m1);
 
 	}
 
@@ -77,47 +76,10 @@ public class MaterialServiceImplementation implements MaterialService {
 			Long quarryId,
 			String materialCategory) throws MaterialException {
 		List<Material> materials = materialRepository.findByQuarryId(quarryId);
-//    if(materialCategory !=null && !materialCategory.equals("")) {
-//	    	materials = filterByMaterialCategory(materials, materialCategory);
-//	    }
 		return materials;
 
 	}
-//		if (materialCategory != null && !materialCategory.trim().isEmpty()) {
-//			return materialRepository.findByQuarryIdAndCategory(quarryId, materialCategory.trim());
-//		}
-//
-//		return materialRepository.findByQuarryId(quarryId);
-	//}
 
-
-
-//	private List<Material> filterByVegetarian(List<Material> foods, boolean isVegetarian) {
-//	    return foods.stream()
-//	            .filter(food -> food.isVegetarian() == isVegetarian)
-//	            .collect(Collectors.toList());
-//	}
-//	private List<Material> filterByNonveg(List<Material> foods, boolean isNonveg) {
-//	    return foods.stream()
-//	            .filter(food -> food.isVegetarian() == false)
-//	            .collect(Collectors.toList());
-//	}
-//	private List<Material> filterBySeasonal(List<Material> foods, boolean isSeasonal) {
-//	    return foods.stream()
-//	            .filter(food -> food.isSeasonal() == isSeasonal)
-//	            .collect(Collectors.toList());
-//	}
-//	private List<Material> filterByFoodCategory(List<Material> foods, String foodCategory) {
-//
-//		return foods.stream()
-//			    .filter(food -> {
-//			        if (food.getMaterialCategory() != null) {
-//			            return food.getMaterialCategory().getName().equals(foodCategory);
-//			        }
-//			        return false; // Return true if food category is null
-//			    })
-//			    .collect(Collectors.toList());
-//	}
 
 	@Override
 	public List<Material> searchMaterial(String keyword) {
@@ -147,6 +109,7 @@ public class MaterialServiceImplementation implements MaterialService {
 			return material.get();
 		}
 		throw new MaterialException("material with id" + materialId + "not found");
+
 	}
 
 }

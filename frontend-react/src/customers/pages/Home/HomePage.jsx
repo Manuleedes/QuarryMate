@@ -6,8 +6,7 @@ import { quarries } from "../../../Data/Quarries";
 import QuarryCard from "../../components/QuarryCard/QuarryCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllQuarriesAction } from "../../../State/Customers/Quarry/quarry.action";
-// import { getAllRestaurantsAction } from "../../../State/Restaurant/Action";
-// import RestarantCard from "../../components/RestarentCard/Restaurant";
+
 
 const HomePage = () => {
   const { auth, quarry } = useSelector((store) => store);

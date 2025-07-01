@@ -71,7 +71,6 @@ const LorryTable = ({ name, isDashboard = false }) => {
                 <TableCell>Image</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Plate Number</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>Capacity (T)</TableCell>
                 <TableCell sx={{ textAlign: "center" }}>Status</TableCell>
                 {!isDashboard && (
                   <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
@@ -104,10 +103,6 @@ const LorryTable = ({ name, isDashboard = false }) => {
                     <TableCell>{item.numberPlate}</TableCell>
 
                     <TableCell sx={{ textAlign: "center" }}>
-                      {item.capacityInTonnes}
-                    </TableCell>
-
-                    <TableCell sx={{ textAlign: "center" }}>
                       <Button
                         color={item.available ? "success" : "error"}
                         variant="text"
@@ -128,7 +123,7 @@ const LorryTable = ({ name, isDashboard = false }) => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
+                  <TableCell colSpan={5} align="center">
                     No lorries found.
                   </TableCell>
                 </TableRow>
@@ -149,6 +144,7 @@ const LorryTable = ({ name, isDashboard = false }) => {
 };
 
 export default LorryTable;
+
 
 
 

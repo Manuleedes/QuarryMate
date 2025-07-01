@@ -2,6 +2,9 @@ package com.Lidigu.controller;
 
 
 import com.Lidigu.domain.USER_ROLE;
+import com.Lidigu.model.Quarry;
+import com.Lidigu.repository.QuarryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,7 +52,8 @@ public class AuthController {
 	private JwtProvider jwtProvider;
 	private CustomeUserServiceImplementation customUserDetails;
 	private CartRepository cartRepository;
-
+	@Autowired
+	private QuarryRepository quarryRepository;
     private PasswordResetTokenService passwordResetTokenService;
 
     private UserService userService;
@@ -121,11 +126,8 @@ public class AuthController {
 
 	@PostMapping("/signin")
 	public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest loginRequest) {
-
 		String username = loginRequest.getEmail();
 		String password = loginRequest.getPassword();
-
-		System.out.println(username + " ----- " + password);
 
 		Authentication authentication = authenticate(username, password);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -135,16 +137,28 @@ public class AuthController {
 
 		authResponse.setMessage("Login Success");
 		authResponse.setJwt(token);
+
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
-
 		String roleName = authorities.isEmpty() ? null : authorities.iterator().next().getAuthority();
+		USER_ROLE role = USER_ROLE.valueOf(roleName);
+		authResponse.setRole(role);
 
+		if (role == USER_ROLE.ROLE_QUARRY_OWNER) {
+			User user = userRepository.findByEmail(username);
+			if (user == null) {
+				throw new UsernameNotFoundException("User not found");
+			}
 
-		authResponse.setRole(USER_ROLE.valueOf(roleName));
+			Quarry quarry = quarryRepository.findByOwner(user)
+					.orElseThrow(() -> new RuntimeException("Quarry not found for user"));
+			authResponse.setQuarryId(quarry.getId());
+		}
 
-		return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.OK);
+		return ResponseEntity.ok(authResponse);
 	}
+
+
+
 
 	private Authentication authenticate(String username, String password) {
 		UserDetails userDetails = customUserDetails.loadUserByUsername(username);

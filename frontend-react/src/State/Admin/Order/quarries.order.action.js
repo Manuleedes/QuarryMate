@@ -1,5 +1,5 @@
 // actions.js
-import axios from "axios";
+
 import {
   UPDATE_ORDER_STATUS_REQUEST,
   UPDATE_ORDER_STATUS_SUCCESS,
@@ -10,56 +10,68 @@ import {
 } from "./ActionType.js";
 import { api } from "../../../config/api.js";
 
-export const updateOrderStatus = ({orderId,orderStatus,jwt}) => {
+// ✅ Update Order Status Action
+export const updateOrderStatus = ({ orderId, orderStatus, jwt }) => {
   return async (dispatch) => {
+    dispatch({ type: UPDATE_ORDER_STATUS_REQUEST });
     try {
-      dispatch({ type: UPDATE_ORDER_STATUS_REQUEST });
-
-      const response = await api.put(
-        `/api/admin/orders/${orderId}/${orderStatus}`,{},{
+      const { data } = await api.put(
+        `/api/admin/orders/${orderId}/${orderStatus}`,
+        {},
+        {
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
         }
       );
 
-      const updatedOrder = response.data;
-
-      console.log("udpdated order ", updatedOrder);
+      console.log("✅ Updated order: ", data);
 
       dispatch({
         type: UPDATE_ORDER_STATUS_SUCCESS,
-        payload: updatedOrder,
+        payload: data,
       });
     } catch (error) {
-      console.log("catch error ", error);
-      dispatch({ type: UPDATE_ORDER_STATUS_FAILURE, error });
+      console.error("❌ Error updating order:", error);
+      dispatch({
+        type: UPDATE_ORDER_STATUS_FAILURE,
+        payload: error.response?.data || error.message,
+      });
     }
   };
 };
 
-export const fetchQuarriesOrder = ({quarryId,orderStatus,jwt}) => {
+// ✅ Fetch Quarry Orders Action
+export const fetchQuarriesOrder = ({ quarryId, orderStatus, jwt }) => {
   return async (dispatch) => {
+    dispatch({ type: GET_QUARRIES_ORDER_REQUEST });
     try {
-      dispatch({ type: GET_QUARRIES_ORDER_REQUEST });
-
       const { data } = await api.get(
-        `/api/admin/order/quarry/${quarryId}`,{
-          params: { order_status:orderStatus},
+        `/api/admin/order/quarry/${quarryId}`,
+        {
+          params: orderStatus ? { order_status: orderStatus } : {},
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
         }
       );
 
-      const orders = data;
-      console.log("quarries order ------ ", orders);
+      console.log("✅ Quarry orders fetched: ", data);
+
+      // If backend returns { orders: [...] }, extract, else use data directly
+      const orders = data.orders || data;
+
       dispatch({
         type: GET_QUARRIES_ORDER_SUCCESS,
         payload: orders,
       });
     } catch (error) {
-      dispatch({ type: GET_QUARRIES_ORDER_FAILURE, error });
+      console.error("❌ Error fetching quarry orders:", error);
+      dispatch({
+        type: GET_QUARRIES_ORDER_FAILURE,
+        payload: error.response?.data || error.message,
+      });
     }
   };
 };
+

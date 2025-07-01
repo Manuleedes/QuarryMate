@@ -18,9 +18,6 @@ import { createLorry } from "../../State/Admin/Lorry/lorry.actions";
 
 const validationSchema = Yup.object({
   plateNumber: Yup.string().required("Plate number is required"),
-  capacityInTonnes: Yup.number()
-    .required("Capacity is required")
-    .positive("Must be a positive number"),
   lorryName: Yup.string(),
   description: Yup.string(),
   imageUrl: Yup.string().url("Invalid image URL"),
@@ -29,13 +26,14 @@ const validationSchema = Yup.object({
 const AddLorryForm = () => {
   const dispatch = useDispatch();
   const { lorry = {} } = useSelector((state) => state);
+  const { currentQuarry } = useSelector((state) => state.quarry);
+
   const [uploadingImage, setUploadingImage] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const formik = useFormik({
     initialValues: {
       plateNumber: "",
-      capacityInTonnes: "",
       lorryName: "",
       description: "",
       imageUrl: "",
@@ -44,12 +42,21 @@ const AddLorryForm = () => {
     onSubmit: async (values, { resetForm }) => {
       const jwt = localStorage.getItem("jwt");
 
+    
+      const quarryId = currentQuarry?.id || localStorage.getItem("quarryId");
+      console.log("Quarry ID used:", quarryId); 
+
+      if (!quarryId) {
+        alert("Quarry ID not found. Please ensure you are managing a quarry.");
+        return;
+      }
+
       const payload = {
         plateNumber: values.plateNumber,
-        capacityInTonnes: values.capacityInTonnes,
         lorryName: values.lorryName,
         description: values.description,
         images: values.imageUrl ? [values.imageUrl] : [],
+        quarryId,
         jwt,
       };
 
@@ -129,26 +136,6 @@ const AddLorryForm = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Capacity in Tonnes"
-              name="capacityInTonnes"
-              type="number"
-              variant="outlined"
-              onChange={formik.handleChange}
-              value={formik.values.capacityInTonnes}
-              error={
-                formik.touched.capacityInTonnes &&
-                Boolean(formik.errors.capacityInTonnes)
-              }
-              helperText={
-                formik.touched.capacityInTonnes &&
-                formik.errors.capacityInTonnes
-              }
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
               label="Lorry Name (optional)"
               name="lorryName"
               variant="outlined"
@@ -197,6 +184,9 @@ const AddLorryForm = () => {
 };
 
 export default AddLorryForm;
+
+
+
 
 
 

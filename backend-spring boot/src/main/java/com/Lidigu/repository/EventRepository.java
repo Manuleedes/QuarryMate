@@ -8,5 +8,5 @@ import com.Lidigu.model.Events;
 
 public interface EventRepository extends JpaRepository<Events, Long>{
 
-	public List<Events> findEventsByQuarryId(Long id);
+	 List<Events> findEventsByQuarryId(Long id);
 }

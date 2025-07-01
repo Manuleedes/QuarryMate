@@ -50,15 +50,33 @@ export const loginUser = (reqData) => async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST });
 
     const { data } = await axios.post(`${API_URL}/auth/signin`, reqData.data);
-    if(data.jwt) localStorage.setItem("jwt",data.jwt)
-    if(data.role==="ROLE_QUARRY_OWNER"){
-      reqData.navigate("/admin/quarry")
+
+    if (data.jwt) localStorage.setItem("jwt", data.jwt);
+
+ 
+    if (data.role) localStorage.setItem("role", data.role);
+
+   
+    if (data.role === "ROLE_QUARRY_OWNER" && data.quarryId) {
+      localStorage.setItem("quarryId", data.quarryId);
     }
-    else{
-      reqData.navigate("/")
+
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: {
+        jwt: data.jwt,
+        role: data.role,
+        quarryId: data.quarryId || null,
+        message: data.message,
+      },
+    });
+
+    // Navigate user
+    if (data.role === "ROLE_QUARRY_OWNER") {
+      reqData.navigate("/admin/quarry");
+    } else {
+      reqData.navigate("/");
     }
-    
-    dispatch({ type: LOGIN_SUCCESS, payload: data.jwt });
   } catch (error) {
     dispatch({
       type: LOGIN_FAILURE,
@@ -69,6 +87,7 @@ export const loginUser = (reqData) => async (dispatch) => {
     });
   }
 };
+
 
 
 export const getUser = (token) => {

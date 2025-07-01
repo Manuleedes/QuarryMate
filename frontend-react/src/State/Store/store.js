@@ -9,22 +9,38 @@ import { orderReducer } from "../Customers/Orders/order.reducer";
 import superAdminReducer from "../SuperAdmin/superAdmin.reducer";
 
 
+const jwt = localStorage.getItem("jwt");
+const role = localStorage.getItem("role");
+const quarryId = localStorage.getItem("quarryId");
+
+const initialAuthState = {
+  jwt: jwt || null,
+  role: role || null,
+  quarryId: quarryId || null,
+  user: null,
+  isLoading: false,
+  error: null,
+  favorites: [],
+  success: null,
+};
 
 
-const rootReducer=combineReducers({
+const rootReducer = combineReducers({
+  auth: authReducer,
+  quarry: quarryReducer,
+  menu: menuItemReducer,
+  cart: cartReducer,
+  order: orderReducer,
+  // admin
+  // quarriesOrder: quarriesOrderReducer,
+  // ingredients: ingredientReducer,
+  // super admin
+  superAdmin: superAdminReducer,
+});
 
-    auth:authReducer,
-    quarry:quarryReducer,
-    menu:menuItemReducer,
-    cart:cartReducer,
-    order:orderReducer,
 
-    // admin
-    // quarriesOrder:quarriesOrderReducer,
-    // ingredients:ingredientReducer,
-
-    // super admin
-    superAdmin:superAdminReducer
-})
-
-export const store=legacy_createStore(rootReducer,applyMiddleware(thunk))
+export const store = legacy_createStore(
+  rootReducer,
+  { auth: initialAuthState }, // preloaded auth state from localStorage
+  applyMiddleware(thunk)
+);

@@ -60,15 +60,10 @@ public class AdminMenuItemController {
 
 		User user = userService.findUserProfileByJwt(jwt);
 
-		// Find quarry by ID
 		Quarry quarry = quarryService.findQuarryById(item.getQuarryId());
-
-		// Set default pricing unit if not provided
 		if (item.getPricingUnit() == null) {
 			item.setPricingUnit(PricingUnit.TONNE);
 		}
-
-		// Create material with updated pricing unit logic
 		Material createdMaterial = menuItemService.createMaterial(item, item.getCategory(), quarry);
 
 		return ResponseEntity.ok(createdMaterial);
@@ -135,10 +130,10 @@ public class AdminMenuItemController {
 				price = quantity * material.getPricePerUnit(); // Price per piece
 				int piecesPerLorry = material.getMaterialCategory() != null &&
 						material.getMaterialCategory().getName().toLowerCase().contains("block") ?
-						500 : 1000; // Adjust pieces per lorry based on material type
+						500 : 1000;
 				lorries = (int) Math.ceil(quantity / piecesPerLorry);
 			} else {
-				price = quantity * material.getPricePerUnit(); // Price per tonne
+				price = quantity * material.getPricePerUnit();
 				double tonnesPerLorry = 18.0;
 				lorries = (int) Math.ceil(quantity / tonnesPerLorry);
 			}
@@ -150,7 +145,7 @@ public class AdminMenuItemController {
 			result.put("pricingUnit", material.getPricingUnit().toString());
 			result.put("lorriesRequired", lorries);
 			result.put("quantity", quantity);
-			result.put("transportCostPerLorry", 25000); // Made this explicit in the response
+			result.put("transportCostPerLorry", 25000);
 			result.put("totalTransportCost", lorries * 25000L);
 			result.put("totalCost", (long) price + (lorries * 25000L));
 

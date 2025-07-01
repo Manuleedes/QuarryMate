@@ -1,4 +1,5 @@
 // reducers.js
+
 import {
   UPDATE_ORDER_STATUS_REQUEST,
   UPDATE_ORDER_STATUS_SUCCESS,
@@ -11,7 +12,7 @@ import {
 const initialState = {
   loading: false,
   error: null,
-  orders:[]
+  orders: [],
 };
 
 const quarriesOrderReducer = (state = initialState, action) => {
@@ -19,19 +20,24 @@ const quarriesOrderReducer = (state = initialState, action) => {
     case GET_QUARRIES_ORDER_REQUEST:
     case UPDATE_ORDER_STATUS_REQUEST:
       return { ...state, loading: true, error: null };
+
     case GET_QUARRIES_ORDER_SUCCESS:
-      return { ...state, loading: false, orders: action.payload };
+      return { ...state, loading: false, orders: action.payload || [] };
+
     case UPDATE_ORDER_STATUS_SUCCESS:
-      const updatedOrders = state.orders.map((order) => 
-        order.id === action.payload.id?action.payload:order
+      const updatedOrders = state.orders.map((order) =>
+        order.id === action.payload.id ? action.payload : order
       );
       return { ...state, loading: false, orders: updatedOrders };
+
     case GET_QUARRIES_ORDER_FAILURE:
     case UPDATE_ORDER_STATUS_FAILURE:
-      return { ...state, loading: false, error: action.error };
+      return { ...state, loading: false, error: action.payload || "Unknown error occurred" };
+
     default:
       return state;
   }
 };
 
 export default quarriesOrderReducer;
+

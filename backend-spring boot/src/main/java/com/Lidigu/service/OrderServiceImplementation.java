@@ -138,7 +138,6 @@ public PaymentResponse createOrder(CreateOrderRequest order, User user) throws E
 		List<Lorry> availableLorries = lorryRepository.findAvailableLorriesOrderedByCapacityDesc();
 		System.out.println("Attempting to allocate lorries for weight: " + totalWeight);
 
-
 		if (availableLorries.isEmpty()) {
 			order.setOrderStatus("PENDING_TRANSPORT");
 			order.setLorryCost(0L);
@@ -147,9 +146,8 @@ public PaymentResponse createOrder(CreateOrderRequest order, User user) throws E
 		}
 
 		double totalAvailableCapacity = availableLorries.stream()
-				.mapToDouble(Lorry::getCapacityInTonnes)
+				.mapToDouble(Lorry::getAllocatedWeight)
 				.sum();
-
 
 		if (totalAvailableCapacity < totalWeight) {
 			order.setOrderStatus("PENDING_TRANSPORT");
@@ -167,43 +165,43 @@ public PaymentResponse createOrder(CreateOrderRequest order, User user) throws E
 			for (Lorry lorry : availableLorries) {
 				if (remainingWeight <= 0) break;
 
-				double assignedWeight = Math.min(remainingWeight, lorry.getCapacityInTonnes());
-				long lorryCost = calculateLorryCost(assignedWeight, lorry.getCapacityInTonnes(), BASE_LORRY_COST);
+				double assignableWeight = Math.min(remainingWeight, lorry.getAllocatedWeight());
+				long lorryCost = calculateLorryCost(assignableWeight, lorry.getAllocatedWeight(), BASE_LORRY_COST);
 
-				lorry.setAllocatedWeight(assignedWeight);
+				// Update lorry details
+				lorry.setAllocatedWeight(assignableWeight);
 				lorry.setAllocationCost(lorryCost);
-				lorry.setOrder(order);
+				lorry.setOrder(order);  // Link to this order
 				lorry.setQuarry(order.getQuarry());
 				lorry.setAvailable(false);
-				lorry.setStatus(LorryStatus.ASSIGNED);
+				lorry.setStatus(LorryStatus.ASSIGNED); // Mark as assigned
 
 				allocated.add(lorry);
 				totalLorryCost += lorryCost;
-				remainingWeight -= assignedWeight;
+				remainingWeight -= assignableWeight;
 			}
 
-
 			if (remainingWeight > 0) {
+				// Partial allocation not sufficient
 				rollbackAllocations(allocated);
 				order.setOrderStatus("PENDING_TRANSPORT");
 				order.setLorryCost(0L);
-				System.out.println("Partial allocation not possible - Order proceeding without transport allocation");
+				System.out.println("Partial allocation insufficient - Order proceeding without transport allocation");
 				return;
 			}
-
 
 			lorryRepository.saveAll(allocated);
 			order.setAllocatedLorries(allocated);
 			order.setLorryCost(totalLorryCost);
 			order.setTotalAmount(order.getTotalAmount() + totalLorryCost);
 			order.setOrderStatus("TRANSPORT_ALLOCATED");
-			System.out.println("Successfully allocated transport - Total cost: " + totalLorryCost);
+			System.out.println("Successfully allocated lorries. Total lorry cost: " + totalLorryCost);
 
 		} catch (Exception e) {
 			rollbackAllocations(allocated);
 			order.setOrderStatus("PENDING_TRANSPORT");
 			order.setLorryCost(0L);
-			System.out.println("Error during allocation - Order proceeding without transport: " + e.getMessage());
+			System.out.println("Error during allocation - Rolling back: " + e.getMessage());
 		}
 	}
 
@@ -220,6 +218,7 @@ public PaymentResponse createOrder(CreateOrderRequest order, User user) throws E
 			lorryRepository.saveAll(allocated);
 		}
 	}
+
 
 
 	private long calculateLorryCost(double allocatedWeight, double capacity, long baseCost) {

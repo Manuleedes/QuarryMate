@@ -21,7 +21,8 @@ public class AdminLorryController {
     public ResponseEntity<Lorry> addLorry(@RequestBody LorryRequest request) {
         Lorry lorry = lorryService.addLorry(
                 request.getPlateNumber(),
-                request.getCapacityInTonnes(),
+                //request.getCapacityInTonnes(),
+                request.getQuarryId(),
                 request.getLorryName(),
                 request.getDescription(),
                 request.getImages()

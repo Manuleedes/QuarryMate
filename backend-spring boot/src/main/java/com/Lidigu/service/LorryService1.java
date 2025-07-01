@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LorryService1 {
 
-     Lorry addLorry( String plateNumber, double capacityInTonnes,  String lorryName, String description,  List<String> images );
+     Lorry addLorry(String plateNumber, Long quarryId, String lorryName, String description, List<String> images );
      List<Lorry> getAvailableLorries();
      List<Lorry> getLorriesByQuarryId(Long quarryId);
      void deleteLorry(Long lorryId);

@@ -42,7 +42,7 @@ public class Order {
 	@ManyToOne
 	private Address deliveryAddress;
 
-	//	@JsonIgnore
+
 	@OneToMany
 	private List<OrderItem> items;
 
